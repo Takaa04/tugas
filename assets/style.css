@@ -95,6 +95,7 @@ body {
   border: 2px solid #76999B;
   padding: 0 10px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 /* button */

@@ -4,400 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChickGuard - Pakan Minum</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root {
-      --cg-bg: #d8f2f3;
-      --cg-panel: #ffffff;
-      --cg-text: #121212;
-      --cg-muted: #6b7280;
-      --cg-shadow: 0 10px 24px rgba(46, 85, 98, 0.18);
-      --cg-radius-lg: 24px;
-    }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Poppins", sans-serif;
-      background: var(--cg-bg);
-      color: var(--cg-text);
-      overflow-x: hidden;
-    }
-
-    .dashboard-shell {
-      min-height: 100vh;
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .sidebar {
-      width: 270px;
-      background: #ffffff;
-      padding: 0.25rem 0 0.65rem 0.4rem;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 2;
-    }
-
-    .sidebar-panel {
-      min-height: 100%;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      overflow: visible;
-    }
-
-    .brand-wrap {
-      padding: 1.25rem 1.15rem 1.2rem;
-      border-bottom: 2px solid #e5e7eb;
-      margin: 0 0.6rem 1.35rem;
-    }
-
-    .brand-image {
-      display: block;
-      width: 100%;
-      max-width: 180px;
-      height: auto;
-    }
-
-    .sidebar-nav-wrap {
-      background: #ffffff;
-      border-top-right-radius: 28px;
-      padding-top: 0.25rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .nav-pills .nav-link {
-      position: relative;
-      border-radius: 24px;
-      color: var(--cg-text);
-      padding: 1rem 1.35rem;
-      font-size: 0.98rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      transition: all 0.2s ease;
-      margin: 0 0.55rem 0 0.25rem;
-      z-index: 1;
-    }
-
-    .nav-pills .nav-link i {
-      font-size: 1.35rem;
-      line-height: 1;
-    }
-
-    .nav-pills .nav-link.active,
-    .nav-pills .show > .nav-link {
-      background: #d8f2f3;
-      color: #0f172a;
-      box-shadow: none;
-      margin-right: -1.2rem;
-      padding-right: 2rem;
-      border-radius: 24px 28px 28px 24px;
-    }
-
-    .nav-pills .nav-link.active::after,
-    .nav-pills .show > .nav-link::after {
-      content: "";
-      position: absolute;
-      right: -1.65rem;
-      bottom: -2.15rem;
-      width: 3.25rem;
-      height: 3.25rem;
-      background: #d8f2f3;
-      clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
-      -webkit-mask-image: radial-gradient(circle at 100% 100%, transparent 0 2rem, black calc(2rem + 1px));
-      mask-image: radial-gradient(circle at 100% 100%, transparent 0 2rem, black calc(2rem + 1px));
-      pointer-events: none;
-    }
-
-    .nav-pills .nav-link:hover {
-      background: #f2fbfd;
-    }
-
-    .sidebar-logout {
-      margin-top: auto;
-    }
-
-    .logout-link:hover {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .logout-link:hover i {
-      color: #b91c1c;
-    }
-
-    .main-content {
-      flex: 1;
-      min-width: 0;
-      width: 100%;
-      padding: 0;
-    }
-
-    .topbar {
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 4px 20px rgba(77, 109, 120, 0.16);
-      padding: 0.75rem 1.1rem;
-      margin: 0;
-    }
-
-    .topbar h1 {
-      font-size: 1.45rem;
-      font-weight: 700;
-      margin-bottom: 0.05rem;
-    }
-
-    .topbar p,
-    .meta-text {
-      color: #111827;
-      margin: 0;
-      font-size: 0.92rem;
-    }
-
-    .content-section {
-      padding: 1.2rem;
-    }
-
-    .card-soft {
-      background: var(--cg-panel);
-      border: 0;
-      border-radius: var(--cg-radius-lg);
-      box-shadow: var(--cg-shadow);
-    }
-
-    .main-content .row {
-      --bs-gutter-x: 1.5rem;
-      margin-right: 0;
-      margin-left: 0;
-    }
-
-    .status-overview {
-      padding: 1.1rem 1.5rem;
-    }
-
-    .supply-group {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .supply-icon {
-      font-size: 2rem;
-      line-height: 1;
-    }
-
-    .supply-icon.feed {
-      color: #22c59e;
-    }
-
-    .supply-icon.water {
-      color: #2cabed;
-    }
-
-    .supply-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.1rem;
-    }
-
-    .supply-value {
-      font-size: 1.9rem;
-      line-height: 1.05;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-    }
-
-    .progress-slim {
-      height: 0.5rem;
-      background: #d9d9d9;
-      border-radius: 999px;
-      overflow: hidden;
-      width: 140px;
-    }
-
-    .progress-slim .progress-bar {
-      border-radius: 999px;
-    }
-
-    .overview-divider {
-      width: 4px;
-      align-self: stretch;
-      background: #d9d9d9;
-      border-radius: 999px;
-      min-height: 96px;
-    }
-
-    .action-btn {
-      min-width: 215px;
-      border: 0;
-      border-radius: 999px;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 0.85rem 1.5rem;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-    }
-
-    .action-btn.feed {
-      background: #23c39c;
-    }
-
-    .action-btn.water {
-      background: #28acef;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin: 0;
-    }
-
-    .add-btn {
-      border: 0;
-      border-radius: 999px;
-      background: #23c39c;
-      color: #fff;
-      font-weight: 700;
-      padding: 0.8rem 1.25rem;
-      box-shadow: 0 8px 18px rgba(35, 195, 156, 0.3);
-    }
-
-    .schedule-card {
-      padding: 1.2rem;
-    }
-
-    .schedule-table {
-      margin: 0;
-      overflow: hidden;
-      border-radius: 18px;
-    }
-
-    .schedule-table thead th {
-      background: #7fa1a5;
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 700;
-      border: 0;
-      padding: 1rem 1rem;
-      vertical-align: middle;
-    }
-
-    .schedule-table thead th:first-child {
-      border-top-left-radius: 18px;
-      border-bottom-left-radius: 18px;
-    }
-
-    .schedule-table thead th:last-child {
-      border-top-right-radius: 18px;
-      border-bottom-right-radius: 18px;
-    }
-
-    .schedule-table tbody td {
-      padding: 1.15rem 1rem;
-      border-color: #e6ecef;
-      vertical-align: middle;
-      font-size: 0.98rem;
-    }
-
-    .action-icons {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .action-icons .edit {
-      color: #6b7280;
-    }
-
-    .action-icons .delete {
-      color: #ff4d1f;
-    }
-
-    .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: linear-gradient(160deg, #79d5d6, #4cc2cf);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-size: 1.5rem;
-    }
-
-    @media (max-width: 991.98px) {
-      .sidebar {
-        width: 100%;
-        padding-left: 0;
-      }
-
-      .topbar {
-        border-radius: 18px;
-        margin: 0.75rem 0.75rem 0;
-      }
-
-      .content-section {
-        padding: 1rem 0.75rem 1.2rem;
-      }
-
-      .overview-divider {
-        display: none;
-      }
-    }
-
-    @media (max-width: 767.98px) {
-      .status-overview {
-        padding: 1rem;
-      }
-
-      .action-btn {
-        min-width: 100%;
-      }
-
-      .schedule-table {
-        min-width: 720px;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .topbar h1 {
-        font-size: 1.2rem;
-      }
-
-      .brand-wrap {
-        margin: 0 0.8rem 1.1rem;
-      }
-
-      .supply-value {
-        font-size: 1.55rem;
-      }
-    }
-  </style>
+  <!-- CSS EXTERNAL -->
+  <link rel="stylesheet" href="../assets/pakan.css">
 </head>
 <body>
   <div class="dashboard-shell d-lg-flex">
     <aside class="sidebar">
       <div class="sidebar-panel">
         <div class="brand-wrap">
-          <img src="logo.png" alt="ChickGuard" class="brand-image">
+          <img src="../assets/logo.png" alt="ChickGuard" class="brand-image">
         </div>
 
         <div class="sidebar-nav-wrap">
-          <ul class="nav nav-pills flex-column gap-2">
+          <ul class="nav nav-pills flex-column gap-2 sidebar-menu">
             <li class="nav-item">
               <a class="nav-link" href="dashboard.php">
                 <i class="bi bi-house-fill"></i>
@@ -405,7 +32,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="pakan-minum.html">
+              <a class="nav-link active" href="pakan_minum.php">
                 <i class="fa-solid fa-bowl-food"></i>
                 <span>Pakan Minum</span>
               </a>
@@ -471,9 +98,11 @@
                   </div>
                 </div>
               </div>
+
               <div class="col-auto d-none d-lg-flex">
                 <div class="overview-divider"></div>
               </div>
+
               <div class="col-12 col-lg-3">
                 <div class="supply-group">
                   <div class="supply-icon water">
@@ -488,6 +117,7 @@
                   </div>
                 </div>
               </div>
+
               <div class="col-12 col-lg">
                 <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
                   <button type="button" class="action-btn feed">Beri Pakan</button>
@@ -579,6 +209,7 @@
               </table>
             </div>
           </div>
+
         </div>
       </section>
     </main>

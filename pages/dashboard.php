@@ -235,8 +235,6 @@
       }
     }
   });
-</script>
-  <script>
   function updateWaktu() {
     const now = new Date();
 

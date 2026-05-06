@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChickGuard - Pakan Minum</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="../assets/vendor/poppins/poppins.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/fontawesome/all.min.css">
 
   <!-- CSS EXTERNAL -->
   <link rel="stylesheet" href="../assets/pakan.css">
@@ -38,13 +36,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="pencahayaan.php">
                 <i class="bi bi-lightbulb-fill"></i>
                 <span>Pencahayaan</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="log_harian.php">
                 <i class="fa-solid fa-note-sticky"></i>
                 <span>Log Harian</span>
               </a>
@@ -70,8 +68,8 @@
           </div>
           <div class="d-flex align-items-center gap-3 ms-md-auto">
             <div class="text-end meta-text">
-              <div class="fw-semibold">07:45</div>
-              <div>Selasa, 21 April 2026</div>
+              <div class="fw-semibold" id="jam"></div>
+              <div id="tanggal"></div>
             </div>
             <div class="avatar">
               <i class="bi bi-person-fill"></i>
@@ -215,6 +213,30 @@
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateWaktu() {
+      const now = new Date();
+
+      const jam = now.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const tanggal = now.toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+
+      document.getElementById("jam").textContent = jam;
+      document.getElementById("tanggal").textContent = tanggal;
+    }
+
+    setInterval(updateWaktu, 1000);
+
+    updateWaktu();
+  </script>
 </body>
 </html>

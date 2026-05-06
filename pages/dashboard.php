@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChickGuard Dashboard</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="../assets/vendor/poppins/poppins.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/vendor/fontawesome/all.min.css">
 
   <!-- CSS EKSTERNAL -->
   <link rel="stylesheet" href="../assets/dashboard.css">
@@ -39,13 +37,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="pencahayaan.php">
                 <i class="bi bi-lightbulb-fill"></i>
                 <span>Pencahayaan</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="log_harian.php">
                 <i class="fa-solid fa-note-sticky"></i>
                 <span>Log Harian</span>
               </a>
@@ -155,8 +153,8 @@
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/chartjs/chart.umd.min.js"></script>
 
   <!-- JS tetap sama -->
   <script>

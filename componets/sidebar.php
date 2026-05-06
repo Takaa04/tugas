@@ -47,7 +47,7 @@ $menuItems = [
       </ul>
 
       <div class="sidebar-logout">
-        <a class="nav-link" href="../proses/logout.php">
+        <a class="nav-link logout-link" href="../proses/logout.php">
           <i class="bi bi-power"></i>
           <span>Logout</span>
         </a>

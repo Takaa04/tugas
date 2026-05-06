@@ -15,7 +15,8 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChickGuard Dashboard</title>
+<title>ChickGuard Dashboard</title>
+  <link rel="icon" href="../assets/icon.png" type="image/png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,9 +24,9 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/dashboard.css">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body class="dashboard-page">
   <div class="dashboard-shell d-lg-flex">
     <?php include '../componets/sidebar.php'; ?>
 

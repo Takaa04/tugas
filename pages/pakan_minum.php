@@ -15,7 +15,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChickGuard - Pakan Minum</title>
+<title>ChickGuard - Pakan Minum</title>
+  <link rel="icon" href="../assets/icon.png" type="image/png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,178 +24,9 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/dashboard.css">
-  <style>
-    .status-overview {
-      padding: 1.1rem 1.5rem;
-    }
-
-    .supply-group {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .supply-icon {
-      font-size: 2rem;
-      line-height: 1;
-    }
-
-    .supply-icon.feed {
-      color: #22c59e;
-    }
-
-    .supply-icon.water {
-      color: #2cabed;
-    }
-
-    .supply-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.1rem;
-    }
-
-    .supply-value {
-      font-size: 1.9rem;
-      line-height: 1.05;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-    }
-
-    .progress-slim {
-      height: 0.5rem;
-      background: #d9d9d9;
-      border-radius: 999px;
-      overflow: hidden;
-      width: 140px;
-    }
-
-    .progress-slim .progress-bar {
-      border-radius: 999px;
-    }
-
-    .overview-divider {
-      width: 4px;
-      align-self: stretch;
-      background: #d9d9d9;
-      border-radius: 999px;
-      min-height: 96px;
-    }
-
-    .action-btn {
-      min-width: 215px;
-      border: 0;
-      border-radius: 999px;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 0.85rem 1.5rem;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-    }
-
-    .action-btn.feed {
-      background: #23c39c;
-    }
-
-    .action-btn.water {
-      background: #28acef;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin: 0;
-    }
-
-    .add-btn {
-      border: 0;
-      border-radius: 999px;
-      background: #23c39c;
-      color: #fff;
-      font-weight: 700;
-      padding: 0.8rem 1.25rem;
-      box-shadow: 0 8px 18px rgba(35, 195, 156, 0.3);
-    }
-
-    .schedule-card {
-      padding: 1.2rem;
-    }
-
-    .schedule-table {
-      margin: 0;
-      overflow: hidden;
-      border-radius: 18px;
-    }
-
-    .schedule-table thead th {
-      background: #7fa1a5;
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 700;
-      border: 0;
-      padding: 1rem;
-      vertical-align: middle;
-    }
-
-    .schedule-table thead th:first-child {
-      border-top-left-radius: 18px;
-      border-bottom-left-radius: 18px;
-    }
-
-    .schedule-table thead th:last-child {
-      border-top-right-radius: 18px;
-      border-bottom-right-radius: 18px;
-    }
-
-    .schedule-table tbody td {
-      padding: 1.15rem 1rem;
-      border-color: #e6ecef;
-      vertical-align: middle;
-      font-size: 0.98rem;
-    }
-
-    .action-icons {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .action-icons .edit {
-      color: #6b7280;
-    }
-
-    .action-icons .delete {
-      color: #ff4d1f;
-    }
-
-    @media (max-width: 991.98px) {
-      .overview-divider {
-        display: none;
-      }
-    }
-
-    @media (max-width: 767.98px) {
-      .status-overview {
-        padding: 1rem;
-      }
-
-      .action-btn {
-        min-width: 100%;
-      }
-
-      .schedule-table {
-        min-width: 720px;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .supply-value {
-        font-size: 1.55rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body class="page-pakan-minum">
   <div class="dashboard-shell d-lg-flex">
     <?php include '../componets/sidebar.php'; ?>
     <main class="main-content">
@@ -240,8 +72,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
               <div class="col-12 col-lg">
                 <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
-                  <button type="button" class="action-btn feed">Beri Pakan</button>
-                  <button type="button" class="action-btn water">Beri Minum</button>
+                  <button type="button" class="pill-button action-btn feed">Beri Pakan</button>
+                  <button type="button" class="pill-button action-btn water">Beri Minum</button>
                 </div>
               </div>
             </div>
@@ -249,12 +81,12 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
             <h2 class="section-title">Jadwal Pemberian</h2>
-            <button type="button" class="add-btn">+ Tambah Jadwal</button>
+            <button type="button" class="pill-button add-btn">+ Tambah Jadwal</button>
           </div>
 
-          <div class="card-soft schedule-card">
+          <div class="card-soft table-card schedule-card">
             <div class="table-responsive">
-              <table class="table schedule-table align-middle">
+              <table class="table data-table schedule-table align-middle">
                 <thead>
                   <tr>
                     <th>Jenis</th>

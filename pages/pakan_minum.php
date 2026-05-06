@@ -198,58 +198,6 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 <body>
   <div class="dashboard-shell d-lg-flex">
     <?php include '../componets/sidebar.php'; ?>
-=======
-
-  <!-- CSS EXTERNAL -->
-  <link rel="stylesheet" href="../assets/pakan.css">
-</head>
-<body>
-  <div class="dashboard-shell d-lg-flex">
-    <aside class="sidebar">
-      <div class="sidebar-panel">
-        <div class="brand-wrap">
-          <img src="../assets/logo.png" alt="ChickGuard" class="brand-image">
-        </div>
-
-        <div class="sidebar-nav-wrap">
-          <ul class="nav nav-pills flex-column gap-2 sidebar-menu">
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
-                <i class="bi bi-house-fill"></i>
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="pakan_minum.php">
-                <i class="fa-solid fa-bowl-food"></i>
-                <span>Pakan Minum</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="bi bi-lightbulb-fill"></i>
-                <span>Pencahayaan</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="fa-solid fa-note-sticky"></i>
-                <span>Log Harian</span>
-              </a>
-            </li>
-          </ul>
-
-          <div class="sidebar-logout">
-            <a class="nav-link logout-link" href="#">
-              <i class="bi bi-power"></i>
-              <span>Logout</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </aside>
->>>>>>> 02f013c534453e8c87b540a2763b651cffbfce16
-
     <main class="main-content">
       <?php include '../componets/topbar.php'; ?>
 

@@ -15,7 +15,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChickGuard - Pakan Minum</title>
+<title>ChickGuard - Pakan Minum</title>
+  <link rel="icon" href="../assets/icon.png" type="image/png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,178 +24,9 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/dashboard.css">
-  <style>
-    .status-overview {
-      padding: 1.1rem 1.5rem;
-    }
-
-    .supply-group {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .supply-icon {
-      font-size: 2rem;
-      line-height: 1;
-    }
-
-    .supply-icon.feed {
-      color: #22c59e;
-    }
-
-    .supply-icon.water {
-      color: #2cabed;
-    }
-
-    .supply-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.1rem;
-    }
-
-    .supply-value {
-      font-size: 1.9rem;
-      line-height: 1.05;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-    }
-
-    .progress-slim {
-      height: 0.5rem;
-      background: #d9d9d9;
-      border-radius: 999px;
-      overflow: hidden;
-      width: 140px;
-    }
-
-    .progress-slim .progress-bar {
-      border-radius: 999px;
-    }
-
-    .overview-divider {
-      width: 4px;
-      align-self: stretch;
-      background: #d9d9d9;
-      border-radius: 999px;
-      min-height: 96px;
-    }
-
-    .action-btn {
-      min-width: 215px;
-      border: 0;
-      border-radius: 999px;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 0.85rem 1.5rem;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-    }
-
-    .action-btn.feed {
-      background: #23c39c;
-    }
-
-    .action-btn.water {
-      background: #28acef;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin: 0;
-    }
-
-    .add-btn {
-      border: 0;
-      border-radius: 999px;
-      background: #23c39c;
-      color: #fff;
-      font-weight: 700;
-      padding: 0.8rem 1.25rem;
-      box-shadow: 0 8px 18px rgba(35, 195, 156, 0.3);
-    }
-
-    .schedule-card {
-      padding: 1.2rem;
-    }
-
-    .schedule-table {
-      margin: 0;
-      overflow: hidden;
-      border-radius: 18px;
-    }
-
-    .schedule-table thead th {
-      background: #7fa1a5;
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 700;
-      border: 0;
-      padding: 1rem;
-      vertical-align: middle;
-    }
-
-    .schedule-table thead th:first-child {
-      border-top-left-radius: 18px;
-      border-bottom-left-radius: 18px;
-    }
-
-    .schedule-table thead th:last-child {
-      border-top-right-radius: 18px;
-      border-bottom-right-radius: 18px;
-    }
-
-    .schedule-table tbody td {
-      padding: 1.15rem 1rem;
-      border-color: #e6ecef;
-      vertical-align: middle;
-      font-size: 0.98rem;
-    }
-
-    .action-icons {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .action-icons .edit {
-      color: #6b7280;
-    }
-
-    .action-icons .delete {
-      color: #ff4d1f;
-    }
-
-    @media (max-width: 991.98px) {
-      .overview-divider {
-        display: none;
-      }
-    }
-
-    @media (max-width: 767.98px) {
-      .status-overview {
-        padding: 1rem;
-      }
-
-      .action-btn {
-        min-width: 100%;
-      }
-
-      .schedule-table {
-        min-width: 720px;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .supply-value {
-        font-size: 1.55rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body class="page-pakan-minum">
   <div class="dashboard-shell d-lg-flex">
     <?php include '../componets/sidebar.php'; ?>
     <main class="main-content">
@@ -209,11 +41,12 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                   <div class="supply-icon feed">
                     <i class="fa-solid fa-bowl-food"></i>
                   </div>
-                  <div>
+                  <div class="supply-body">
                     <div class="supply-title">Pakan</div>
-                    <div class="supply-value">75%</div>
+                    <div class="supply-value" id="feedPercent">75%</div>
+                    <div class="supply-stock-text" id="feedStockText">15.0 / 20.0 kg</div>
                     <div class="progress-slim">
-                      <div class="progress-bar bg-success" style="width: 75%"></div>
+                      <div class="progress-bar bg-success" id="feedProgressBar" style="width: 75%"></div>
                     </div>
                   </div>
                 </div>
@@ -228,11 +61,12 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                   <div class="supply-icon water">
                     <i class="bi bi-droplet-fill"></i>
                   </div>
-                  <div>
+                  <div class="supply-body">
                     <div class="supply-title">Air</div>
-                    <div class="supply-value">60%</div>
+                    <div class="supply-value" id="waterPercent">60%</div>
+                    <div class="supply-stock-text" id="waterStockText">12.0 / 20.0 L</div>
                     <div class="progress-slim">
-                      <div class="progress-bar bg-info" style="width: 60%"></div>
+                      <div class="progress-bar bg-info" id="waterProgressBar" style="width: 60%"></div>
                     </div>
                   </div>
                 </div>
@@ -240,8 +74,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
               <div class="col-12 col-lg">
                 <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
-                  <button type="button" class="action-btn feed">Beri Pakan</button>
-                  <button type="button" class="action-btn water">Beri Minum</button>
+                  <button type="button" class="pill-button action-btn feed" id="feedActionBtn">Beri Pakan</button>
+                  <button type="button" class="pill-button action-btn water" id="waterActionBtn">Beri Minum</button>
                 </div>
               </div>
             </div>
@@ -249,18 +83,19 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
             <h2 class="section-title">Jadwal Pemberian</h2>
-            <button type="button" class="add-btn">+ Tambah Jadwal</button>
+            <button type="button" class="pill-button add-btn js-open-schedule-modal">+ Tambah Jadwal</button>
           </div>
 
-          <div class="card-soft schedule-card">
+          <div class="card-soft table-card schedule-card">
             <div class="table-responsive">
-              <table class="table schedule-table align-middle">
+              <table class="table data-table schedule-table align-middle">
                 <thead>
                   <tr>
                     <th>Jenis</th>
                     <th>Waktu</th>
                     <th>Jumlah<br>Pakan</th>
                     <th>Hari</th>
+                    <th>Catatan</th>
                     <th class="text-center">Aksi</th>
                   </tr>
                 </thead>
@@ -270,6 +105,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                     <td>06:00</td>
                     <td>3.0 kg</td>
                     <td>Senin, Rabu, Jumat</td>
+                    <td>Pakan pagi untuk awal aktivitas</td>
                     <td>
                       <div class="action-icons justify-content-center">
                         <i class="bi bi-pencil-square edit"></i>
@@ -282,6 +118,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                     <td>07:00</td>
                     <td>2.0 L</td>
                     <td>Semua Hari</td>
+                    <td>Isi air minum setelah pakan pagi</td>
                     <td>
                       <div class="action-icons justify-content-center">
                         <i class="bi bi-pencil-square edit"></i>
@@ -294,6 +131,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                     <td>12:00</td>
                     <td>2.0 kg</td>
                     <td>Semua Hari</td>
+                    <td>Tambahan pakan siang secukupnya</td>
                     <td>
                       <div class="action-icons justify-content-center">
                         <i class="bi bi-pencil-square edit"></i>
@@ -306,6 +144,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                     <td>13:00</td>
                     <td>1.5 L</td>
                     <td>Selasa, Kamis</td>
+                    <td>Pengecekan dan isi ulang wadah air</td>
                     <td>
                       <div class="action-icons justify-content-center">
                         <i class="bi bi-pencil-square edit"></i>
@@ -318,6 +157,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                     <td>19:00</td>
                     <td>2.8 kg</td>
                     <td>Sabtu, Minggu</td>
+                    <td>Pakan malam untuk akhir pekan</td>
                     <td>
                       <div class="action-icons justify-content-center">
                         <i class="bi bi-pencil-square edit"></i>
@@ -333,6 +173,75 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
         </div>
       </section>
     </main>
+  </div>
+
+  <div class="schedule-modal-backdrop hidden" id="scheduleModal" aria-hidden="true">
+    <div class="schedule-modal-card" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
+      <form class="schedule-form">
+        <div class="schedule-modal-head">
+          <div class="schedule-modal-icon" id="scheduleTypeIcon">
+            <i class="fa-solid fa-bowl-food"></i>
+          </div>
+          <div>
+            <h2 id="scheduleModalTitle">Tambah Jadwal</h2>
+            <p id="scheduleModalSubtitle">Atur jadwal pemberian pakan dan minum</p>
+          </div>
+        </div>
+
+        <div class="schedule-group">
+          <div class="schedule-group-title">Jenis</div>
+          <div class="schedule-type-switch">
+            <button type="button" class="schedule-type-btn active" data-type="Pakan">Pakan</button>
+            <button type="button" class="schedule-type-btn" data-type="Minum">Minum</button>
+          </div>
+        </div>
+
+        <div class="schedule-fields-grid">
+          <label class="schedule-field">
+            <span class="schedule-field-label"><i class="bi bi-clock"></i> Waktu Pemberian</span>
+            <input type="time" value="08:00">
+          </label>
+
+          <div class="schedule-field">
+            <span class="schedule-field-label"><i class="bi bi-sliders"></i> Jumlah</span>
+            <div class="schedule-amount-wrap">
+              <input type="number" min="0" step="0.1">
+              <span class="schedule-unit" id="scheduleUnit">Kg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-group">
+          <span class="schedule-field-label"><i class="bi bi-calendar3"></i> Pilih Hari</span>
+          <div class="schedule-days">
+            <label class="schedule-day"><input type="checkbox"><span>Senin</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Selasa</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Rabu</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Kamis</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Jumat</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Sabtu</span></label>
+            <label class="schedule-day"><input type="checkbox"><span>Minggu</span></label>
+          </div>
+          <button type="button" class="schedule-reset-btn" id="scheduleResetBtn">
+            <i class="bi bi-arrow-repeat"></i>
+            <span>Reset</span>
+          </button>
+        </div>
+
+        <label class="schedule-field schedule-note-field">
+          <span class="schedule-field-label"><i class="bi bi-check-circle"></i> Catatan (Opsional)</span>
+          <input type="text" placeholder="Contoh: Pagi Hari">
+        </label>
+
+        <div class="schedule-actions">
+          <button type="button" class="schedule-btn secondary" id="closeScheduleModal">Batal</button>
+          <button type="submit" class="schedule-btn primary">
+            <i class="bi bi-calendar-check"></i>
+            <span>Simpan</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -356,6 +265,128 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
     setInterval(updateWaktu, 1000);
     updateWaktu();
+
+    const scheduleModal = document.getElementById("scheduleModal");
+    const openScheduleModalBtn = document.querySelector(".js-open-schedule-modal");
+    const closeScheduleModalBtn = document.getElementById("closeScheduleModal");
+    const scheduleResetBtn = document.getElementById("scheduleResetBtn");
+    const scheduleTypeButtons = document.querySelectorAll(".schedule-type-btn");
+    const scheduleTypeIcon = document.getElementById("scheduleTypeIcon");
+    const scheduleModalSubtitle = document.getElementById("scheduleModalSubtitle");
+    const scheduleUnit = document.getElementById("scheduleUnit");
+    const scheduleCheckboxes = document.querySelectorAll(".schedule-day input");
+    const feedPercent = document.getElementById("feedPercent");
+    const waterPercent = document.getElementById("waterPercent");
+    const feedStockText = document.getElementById("feedStockText");
+    const waterStockText = document.getElementById("waterStockText");
+    const feedProgressBar = document.getElementById("feedProgressBar");
+    const waterProgressBar = document.getElementById("waterProgressBar");
+    const feedActionBtn = document.getElementById("feedActionBtn");
+    const waterActionBtn = document.getElementById("waterActionBtn");
+
+    const stockState = {
+      feed: {
+        current: 15.0,
+        max: 20.0,
+        step: 1.0,
+        unit: "kg",
+        percentEl: feedPercent,
+        stockEl: feedStockText,
+        progressEl: feedProgressBar,
+      },
+      water: {
+        current: 12.0,
+        max: 20.0,
+        step: 0.8,
+        unit: "L",
+        percentEl: waterPercent,
+        stockEl: waterStockText,
+        progressEl: waterProgressBar,
+      }
+    };
+
+    function renderStock(type) {
+      const stock = stockState[type];
+      const percent = Math.max(0, (stock.current / stock.max) * 100);
+
+      stock.percentEl.textContent = `${Math.round(percent)}%`;
+      stock.stockEl.textContent = `${stock.current.toFixed(1)} / ${stock.max.toFixed(1)} ${stock.unit}`;
+      stock.progressEl.style.width = `${percent}%`;
+      stock.progressEl.setAttribute("aria-valuenow", Math.round(percent));
+    }
+
+    function useStock(type) {
+      const stock = stockState[type];
+      stock.current = Math.max(0, stock.current - stock.step);
+      renderStock(type);
+    }
+
+    function setScheduleType(type) {
+      const isPakan = type === "Pakan";
+
+      scheduleTypeButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.type === type);
+      });
+
+      scheduleModal.classList.toggle("is-minum", !isPakan);
+      scheduleTypeIcon.innerHTML = isPakan
+        ? '<i class="fa-solid fa-bowl-food"></i>'
+        : '<i class="bi bi-droplet-fill"></i>';
+      scheduleUnit.textContent = isPakan ? "Kg" : "L";
+      scheduleModalSubtitle.textContent = isPakan
+        ? "Atur jadwal pemberian pakan dan minum"
+        : "Atur ulang jadwal pemberian pakan dan minum";
+    }
+
+    function openScheduleModal() {
+      scheduleModal.classList.remove("hidden");
+      document.body.classList.add("modal-open");
+      scheduleModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeScheduleModal() {
+      scheduleModal.classList.add("hidden");
+      document.body.classList.remove("modal-open");
+      scheduleModal.setAttribute("aria-hidden", "true");
+    }
+
+    openScheduleModalBtn.addEventListener("click", openScheduleModal);
+    closeScheduleModalBtn.addEventListener("click", closeScheduleModal);
+
+    scheduleModal.addEventListener("click", (event) => {
+      if (event.target === scheduleModal) {
+        closeScheduleModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !scheduleModal.classList.contains("hidden")) {
+        closeScheduleModal();
+      }
+    });
+
+    scheduleTypeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setScheduleType(button.dataset.type);
+      });
+    });
+
+    scheduleResetBtn.addEventListener("click", () => {
+      scheduleCheckboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+      });
+    });
+
+    feedActionBtn.addEventListener("click", () => {
+      useStock("feed");
+    });
+
+    waterActionBtn.addEventListener("click", () => {
+      useStock("water");
+    });
+
+    renderStock("feed");
+    renderStock("water");
   </script>
 </body>
 </html>

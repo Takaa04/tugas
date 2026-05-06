@@ -78,6 +78,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <th>Waktu</th>
                       <th>Durasi</th>
                       <th>Hari</th>
+                      <th>Catatan</th>
                       <th class="text-center">Aksi</th>
                     </tr>
                   </thead>
@@ -87,6 +88,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <td>06:00</td>
                       <td>3 Jam</td>
                       <td>Senin, Rabu,<br>Jumat</td>
+                      <td>Pencahayaan pagi untuk awal aktivitas kandang</td>
                       <td>
                         <div class="action-icons">
                           <i class="bi bi-pencil-square edit"></i>
@@ -99,6 +101,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <td>07:00</td>
                       <td>2 Jam</td>
                       <td>Semua Hari</td>
+                      <td>Menjaga suhu kandang tetap hangat di pagi hari</td>
                       <td>
                         <div class="action-icons">
                           <i class="bi bi-pencil-square edit"></i>
@@ -111,6 +114,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <td>12:00</td>
                       <td>2 Jam</td>
                       <td>Semua Hari</td>
+                      <td>Pencahayaan siang untuk menjaga visibilitas area</td>
                       <td>
                         <div class="action-icons">
                           <i class="bi bi-pencil-square edit"></i>
@@ -123,6 +127,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <td>13:00</td>
                       <td>1.5 Jam</td>
                       <td>Selasa, Kamis</td>
+                      <td>Lampu tambahan saat cuaca redup atau mendung</td>
                       <td>
                         <div class="action-icons">
                           <i class="bi bi-pencil-square edit"></i>
@@ -135,6 +140,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                       <td>19:00</td>
                       <td>2.8 Jam</td>
                       <td>Sabtu, Minggu</td>
+                      <td>Pencahayaan malam untuk akhir pekan</td>
                       <td>
                         <div class="action-icons">
                           <i class="bi bi-pencil-square edit"></i>

@@ -16,12 +16,14 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChickGuard - Pakan Minum</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<<<<<<< HEAD
   <link rel="stylesheet" href="../assets/dashboard.css">
   <style>
     .status-overview {
@@ -196,6 +198,57 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 <body>
   <div class="dashboard-shell d-lg-flex">
     <?php include '../componets/sidebar.php'; ?>
+=======
+
+  <!-- CSS EXTERNAL -->
+  <link rel="stylesheet" href="../assets/pakan.css">
+</head>
+<body>
+  <div class="dashboard-shell d-lg-flex">
+    <aside class="sidebar">
+      <div class="sidebar-panel">
+        <div class="brand-wrap">
+          <img src="../assets/logo.png" alt="ChickGuard" class="brand-image">
+        </div>
+
+        <div class="sidebar-nav-wrap">
+          <ul class="nav nav-pills flex-column gap-2 sidebar-menu">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.php">
+                <i class="bi bi-house-fill"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="pakan_minum.php">
+                <i class="fa-solid fa-bowl-food"></i>
+                <span>Pakan Minum</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="bi bi-lightbulb-fill"></i>
+                <span>Pencahayaan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="fa-solid fa-note-sticky"></i>
+                <span>Log Harian</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="sidebar-logout">
+            <a class="nav-link logout-link" href="#">
+              <i class="bi bi-power"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+>>>>>>> 02f013c534453e8c87b540a2763b651cffbfce16
 
     <main class="main-content">
       <?php include '../componets/topbar.php'; ?>
@@ -218,9 +271,11 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                   </div>
                 </div>
               </div>
+
               <div class="col-auto d-none d-lg-flex">
                 <div class="overview-divider"></div>
               </div>
+
               <div class="col-12 col-lg-3">
                 <div class="supply-group">
                   <div class="supply-icon water">
@@ -235,6 +290,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                   </div>
                 </div>
               </div>
+
               <div class="col-12 col-lg">
                 <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
                   <button type="button" class="action-btn feed">Beri Pakan</button>
@@ -326,6 +382,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
               </table>
             </div>
           </div>
+
         </div>
       </section>
     </main>

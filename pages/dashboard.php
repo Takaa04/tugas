@@ -194,7 +194,6 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
       document.getElementById("jam").textContent = jam;
       document.getElementById("tanggal").textContent = tanggal;
     }
-
     setInterval(updateWaktu, 1000);
     updateWaktu();
   </script>

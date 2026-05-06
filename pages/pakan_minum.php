@@ -35,8 +35,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       <section class="content-section">
         <div class="container-fluid px-0">
           <div class="card-soft status-overview mb-4">
-            <div class="row align-items-center g-4">
-              <div class="col-12 col-lg-3">
+            <div class="row align-items-center g-4 status-overview-grid">
+              <div class="col-12 col-lg-3 status-grid-item supply-panel-item">
                 <div class="supply-group">
                   <div class="supply-icon feed">
                     <i class="fa-solid fa-bowl-food"></i>
@@ -52,11 +52,11 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                 </div>
               </div>
 
-              <div class="col-auto d-none d-lg-flex">
+              <div class="col-auto d-none d-lg-flex status-grid-item divider-item">
                 <div class="overview-divider"></div>
               </div>
 
-              <div class="col-12 col-lg-3">
+              <div class="col-12 col-lg-3 status-grid-item supply-panel-item">
                 <div class="supply-group">
                   <div class="supply-icon water">
                     <i class="bi bi-droplet-fill"></i>
@@ -72,9 +72,14 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                 </div>
               </div>
 
-              <div class="col-12 col-lg">
-                <div class="d-flex flex-column flex-md-row justify-content-lg-end gap-3">
+              <div class="col-12 col-md-6 col-lg-3 status-grid-item action-slot">
+                <div class="d-flex justify-content-center">
                   <button type="button" class="pill-button action-btn feed" id="feedActionBtn">Beri Pakan</button>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-lg-3 status-grid-item action-slot">
+                <div class="d-flex justify-content-center">
                   <button type="button" class="pill-button action-btn water" id="waterActionBtn">Beri Minum</button>
                 </div>
               </div>

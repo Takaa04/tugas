@@ -25,6 +25,10 @@ body {
   --cg-font-lg: 1.2rem;
   --cg-font-xl: 1.5rem;
   --cg-font-xxl: 1.85rem;
+  --cg-btn-height: 52px;
+  --cg-btn-radius: 14px;
+  --cg-btn-padding-x: 1.35rem;
+  --cg-action-btn-width: 220px;
   --cg-page-duration: 0.26s;
   --cg-page-duration-fast: 0.2s;
   --cg-page-ease: ease-out;
@@ -677,7 +681,95 @@ body.page-log-harian {
 .sidebar-logout .logout-link:hover {
   background: #ef4444;
   color: #ffffff;
-  transform: translateX(4px);
+  transform: none;
+}
+
+.logout-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(28, 28, 28, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.logout-modal-backdrop.hidden {
+  display: none;
+}
+
+.logout-modal-card {
+  width: min(100%, 612px);
+  background: #ffffff;
+  border-radius: 34px;
+  padding: 38px 34px 44px;
+  text-align: center;
+  box-shadow: 0 24px 58px rgba(15, 23, 42, 0.22);
+}
+
+.logout-modal-icon {
+  width: 114px;
+  height: 114px;
+  margin: 0 auto 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ff5417;
+  color: #ffffff;
+  font-size: 3.2rem;
+}
+
+.logout-modal-card h2 {
+  margin: 0 0 18px;
+  font-size: 2.35rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #111827;
+}
+
+.logout-modal-card p {
+  max-width: 470px;
+  margin: 0 auto;
+  color: #6b7280;
+  font-size: 1.08rem;
+  line-height: 1.55;
+}
+
+.logout-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.logout-modal-btn {
+  min-height: 82px;
+  border-radius: 22px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: filter 0.18s ease;
+}
+
+.logout-modal-btn:hover {
+  filter: brightness(0.98);
+}
+
+.logout-modal-btn.secondary {
+  border: 0;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.logout-modal-btn.primary {
+  border: 0;
+  background: #ff5417;
+  color: #ffffff;
 }
 
 .main-content {
@@ -759,7 +851,8 @@ body.page-log-harian {
   color: #fff;
   font-size: var(--cg-font-base);
   font-weight: 700;
-  padding: 0.85rem 1.35rem;
+  min-height: var(--cg-btn-height);
+  padding: 0 var(--cg-btn-padding-x);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
   transition: transform 0.14s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
@@ -827,15 +920,16 @@ body.page-log-harian {
 }
 
 .page-chip {
-  min-width: 28px;
-  height: 28px;
+  min-width: 34px;
+  height: 34px;
   border: 1px solid #7f9fa5;
-  border-radius: 7px;
+  border-radius: 10px;
   background: #fff;
   color: #577980;
-  font-size: var(--cg-font-xs);
+  font-size: var(--cg-font-sm);
   display: grid;
   place-items: center;
+  font-weight: 600;
 }
 
 .page-chip.active {
@@ -1000,6 +1094,10 @@ body.page-pakan-minum .status-overview {
   padding: 1.1rem 1.5rem;
 }
 
+body.page-pakan-minum .status-overview-grid {
+  align-items: center;
+}
+
 body.page-pakan-minum .supply-group {
   display: flex;
   align-items: center;
@@ -1071,7 +1169,9 @@ body.page-pakan-minum .overview-divider {
 }
 
 body.page-pakan-minum .action-btn {
-  min-width: 215px;
+  width: 100%;
+  max-width: var(--cg-action-btn-width);
+  min-width: var(--cg-action-btn-width);
   position: relative;
   overflow: hidden;
 }
@@ -1087,6 +1187,39 @@ body.page-pakan-minum .action-btn.feed {
 
 body.page-pakan-minum .action-btn.water {
   background: #28acef;
+}
+
+body.page-pakan-minum .action-slot {
+  display: flex;
+  justify-content: center;
+}
+
+body.page-pakan-minum .supply-panel-item,
+body.page-pakan-minum .action-slot {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  body.page-pakan-minum .status-overview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4px minmax(0, 1fr) minmax(220px, 1fr) minmax(220px, 1fr);
+    gap: 1.5rem;
+  }
+
+  body.page-pakan-minum .status-overview-grid > .status-grid-item {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  body.page-pakan-minum .divider-item {
+    display: flex !important;
+    justify-content: center;
+  }
+
+  body.page-pakan-minum .action-slot {
+    justify-content: center;
+  }
 }
 
 body.page-pakan-minum .add-btn {
@@ -1197,12 +1330,12 @@ body.page-pakan-minum .edit {
 }
 
 .schedule-type-btn {
-  min-height: 56px;
+  min-height: var(--cg-btn-height);
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--cg-btn-radius);
   background: #ffffff;
   color: #111827;
-  font-size: 1rem;
+  font-size: var(--cg-font-base);
   font-weight: 700;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
 }
@@ -1348,15 +1481,17 @@ body.page-pakan-minum .edit {
 
 .schedule-reset-btn {
   min-width: 116px;
-  min-height: 50px;
+  min-height: var(--cg-btn-height);
   border: 1.7px solid #b7b7b7;
-  border-radius: 10px;
+  border-radius: var(--cg-btn-radius);
   background: #ffffff;
   color: #7c7c7c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-size: var(--cg-font-base);
+  font-weight: 600;
 }
 
 .schedule-note-field {
@@ -1370,8 +1505,10 @@ body.page-pakan-minum .edit {
 }
 
 .schedule-btn {
-  min-height: 50px;
-  border-radius: 10px;
+  min-height: var(--cg-btn-height);
+  border-radius: var(--cg-btn-radius);
+  padding: 0 var(--cg-btn-padding-x);
+  font-size: var(--cg-font-base);
   font-weight: 700;
 }
 
@@ -1489,6 +1626,8 @@ body.page-pencahayaan .status-pill-large {
 
 body.page-pencahayaan .action-btn {
   width: 100%;
+  max-width: var(--cg-action-btn-width);
+  min-width: var(--cg-action-btn-width);
 }
 
 body.page-pencahayaan .action-btn.green {
@@ -1600,9 +1739,9 @@ body.page-log-harian .rows-box {
 
 body.page-log-harian .rows-select {
   width: 50px;
-  height: 40px;
+  height: 44px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #e5e7eb;
   color: #111827;
   font-weight: 600;
@@ -1887,6 +2026,35 @@ body.page-log-harian .footer-left strong {
   body.page-log-harian .table-footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .logout-modal-card {
+    border-radius: 28px;
+    padding: 28px 20px 24px;
+  }
+
+  .logout-modal-icon {
+    width: 92px;
+    height: 92px;
+    margin-bottom: 28px;
+    font-size: 2.7rem;
+  }
+
+  .logout-modal-card h2 {
+    font-size: 1.9rem;
+  }
+
+  .logout-modal-card p {
+    font-size: 1rem;
+  }
+
+  .logout-modal-actions {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .logout-modal-btn {
+    min-height: 68px;
   }
 }
 

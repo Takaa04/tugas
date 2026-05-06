@@ -1,206 +1,166 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+$activePage = 'pencahayaan';
+$topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin') . ' 👋';
+$topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChickGuard - Pencahayaan</title>
-
-  <link href="../assets/vendor/poppins/poppins.css" rel="stylesheet">
-  <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/vendor/fontawesome/all.min.css">
-  <link rel="stylesheet" href="../assets/pencahayaan.css">
+<title>ChickGuard - Pencahayaan</title>
+  <link rel="icon" href="../assets/icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body class="page-pencahayaan">
   <div class="dashboard-shell d-lg-flex">
-    <aside class="sidebar">
-      <div class="sidebar-panel">
-        <div class="brand-wrap">
-          <img src="../assets/logo.png" alt="ChickGuard" class="brand-image">
-        </div>
-
-        <div class="sidebar-nav-wrap">
-          <ul class="nav nav-pills flex-column gap-2 sidebar-menu">
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard.php">
-                <i class="bi bi-house-fill"></i>
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="pakan_minum.php">
-                <i class="fa-solid fa-bowl-food"></i>
-                <span>Pakan Minum</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="pencahayaan.php">
-                <i class="bi bi-lightbulb-fill"></i>
-                <span>Pencahayaan</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="log_harian.php">
-                <i class="fa-solid fa-note-sticky"></i>
-                <span>Log Harian</span>
-              </a>
-            </li>
-          </ul>
-
-          <div class="sidebar-logout">
-            <a class="nav-link logout-link" href="#">
-              <i class="bi bi-power"></i>
-              <span>Logout</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </aside>
+    <?php include '../componets/sidebar.php'; ?>
 
     <main class="main-content">
-      <header class="topbar">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-          <div>
-            <h1>Selamat datang, Admin</h1>
-            <p>Pantau kondisi kandang dan sistem secara real-time</p>
-          </div>
-          <div class="d-flex align-items-center gap-3 ms-md-auto">
-            <div class="text-end meta-text">
-              <div class="fw-semibold" id="jam"></div>
-              <div id="tanggal"></div>
-            </div>
-            <div class="avatar">
-              <i class="bi bi-person-fill"></i>
-            </div>
-          </div>
-        </div>
-      </header>
+      <?php include '../componets/topbar.php'; ?>
 
       <section class="content-section">
         <div class="container-fluid px-0">
-          <div class="card-soft lamp-status mb-4">
-            <div class="row align-items-center g-4">
-              <div class="col-12 col-lg-3">
-                <div class="mode-box">
-                  <div class="mode-title">Mode Lampu<br>otomatis</div>
-                  <label class="switch" aria-label="Mode lampu otomatis">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                  </label>
+          <div class="card-soft hero-card">
+            <div class="hero-grid">
+              <div class="hero-block centered">
+                <div>
+                  <div class="hero-title text-center">Mode Lampu<br>otomatis</div>
+                  <div class="toggle-pill mx-auto"></div>
                 </div>
               </div>
 
-              <div class="col-12 col-lg-4">
-                <div class="status-group">
-                  <div class="lamp-icon">
-                    <i class="bi bi-lightbulb"></i>
-                  </div>
-                  <div>
-                    <div class="status-title">Status Lampu</div>
-                    <div class="status-pill">Nyala</div>
-                  </div>
+              <div class="hero-block centered">
+                <div class="hero-icon">
+                  <i class="bi bi-lightbulb"></i>
+                </div>
+                <div>
+                  <div class="hero-title">Status Lampu</div>
+                  <div class="status-pill-large">Nyala</div>
                 </div>
               </div>
 
-              <div class="col-12 col-lg">
-                <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-3">
-                  <button type="button" class="control-btn on">Nyalakan</button>
-                  <button type="button" class="control-btn off">Matikan</button>
-                </div>
+              <div class="hero-block centered">
+                <button type="button" class="pill-button action-btn green">Nyalakan</button>
+              </div>
+
+              <div class="hero-block centered">
+                <button type="button" class="pill-button action-btn orange">Matikan</button>
               </div>
             </div>
           </div>
 
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
-            <h2 class="section-title">Jadwal Nyala Lampu</h2>
-            <button type="button" class="add-btn">+ Tambah Jadwal</button>
+          <div class="section-head">
+            <h2 class="page-title">Jadwal Nyala Lampu</h2>
+            <button type="button" class="pill-button add-btn">+ Tambah Jadwal</button>
           </div>
 
-          <div class="schedule-frame">
-            <div class="table-responsive">
-              <table class="table schedule-table align-middle">
-                <thead>
-                  <tr>
-                    <th>Mode</th>
-                    <th>Waktu</th>
-                    <th>Durasi<br>Nyala</th>
-                    <th>Hari</th>
-                    <th class="text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Pagi</td>
-                    <td>05:30</td>
-                    <td>2 jam</td>
-                    <td>Setiap Hari</td>
-                    <td>
-                      <div class="action-icons justify-content-center">
-                        <i class="bi bi-pencil-square edit"></i>
-                        <i class="bi bi-trash3 delete"></i>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Siang</td>
-                    <td>12:00</td>
-                    <td>1 jam</td>
-                    <td>Senin, Rabu, Jumat</td>
-                    <td>
-                      <div class="action-icons justify-content-center">
-                        <i class="bi bi-pencil-square edit"></i>
-                        <i class="bi bi-trash3 delete"></i>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Sore</td>
-                    <td>17:30</td>
-                    <td>3 jam</td>
-                    <td>Setiap Hari</td>
-                    <td>
-                      <div class="action-icons justify-content-center">
-                        <i class="bi bi-pencil-square edit"></i>
-                        <i class="bi bi-trash3 delete"></i>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Malam</td>
-                    <td>21:00</td>
-                    <td>4 jam</td>
-                    <td>Selasa, Kamis</td>
-                    <td>
-                      <div class="action-icons justify-content-center">
-                        <i class="bi bi-pencil-square edit"></i>
-                        <i class="bi bi-trash3 delete"></i>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Redup</td>
-                    <td>02:00</td>
-                    <td>1.5 jam</td>
-                    <td>Sabtu, Minggu</td>
-                    <td>
-                      <div class="action-icons justify-content-center">
-                        <i class="bi bi-pencil-square edit"></i>
-                        <i class="bi bi-trash3 delete"></i>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="card-soft table-card schedule-card">
+            <div class="table-shell table-wrap">
+              <div class="table-responsive">
+                <table class="table data-table schedule-table align-middle">
+                  <thead>
+                    <tr>
+                      <th>Jenis</th>
+                      <th>Waktu</th>
+                      <th>Durasi</th>
+                      <th>Hari</th>
+                      <th>Catatan</th>
+                      <th class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Lampu Utama</td>
+                      <td>06:00</td>
+                      <td>3 Jam</td>
+                      <td>Senin, Rabu,<br>Jumat</td>
+                      <td>Pencahayaan pagi untuk awal aktivitas kandang</td>
+                      <td>
+                        <div class="action-icons">
+                          <i class="bi bi-pencil-square edit"></i>
+                          <i class="bi bi-trash3 delete"></i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Lampu Pemanas</td>
+                      <td>07:00</td>
+                      <td>2 Jam</td>
+                      <td>Semua Hari</td>
+                      <td>Menjaga suhu kandang tetap hangat di pagi hari</td>
+                      <td>
+                        <div class="action-icons">
+                          <i class="bi bi-pencil-square edit"></i>
+                          <i class="bi bi-trash3 delete"></i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Lampu Utama</td>
+                      <td>12:00</td>
+                      <td>2 Jam</td>
+                      <td>Semua Hari</td>
+                      <td>Pencahayaan siang untuk menjaga visibilitas area</td>
+                      <td>
+                        <div class="action-icons">
+                          <i class="bi bi-pencil-square edit"></i>
+                          <i class="bi bi-trash3 delete"></i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Lampu Cadangan</td>
+                      <td>13:00</td>
+                      <td>1.5 Jam</td>
+                      <td>Selasa, Kamis</td>
+                      <td>Lampu tambahan saat cuaca redup atau mendung</td>
+                      <td>
+                        <div class="action-icons">
+                          <i class="bi bi-pencil-square edit"></i>
+                          <i class="bi bi-trash3 delete"></i>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Lampu Utama</td>
+                      <td>19:00</td>
+                      <td>2.8 Jam</td>
+                      <td>Sabtu, Minggu</td>
+                      <td>Pencahayaan malam untuk akhir pekan</td>
+                      <td>
+                        <div class="action-icons">
+                          <i class="bi bi-pencil-square edit"></i>
+                          <i class="bi bi-trash3 delete"></i>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div class="pagination-wrap">
-              <button type="button" class="page-btn disabled" aria-label="Halaman sebelumnya dua kali">&laquo;</button>
-              <button type="button" class="page-btn disabled" aria-label="Halaman sebelumnya">&lsaquo;</button>
-              <button type="button" class="page-btn active">1</button>
-              <button type="button" class="page-btn">2</button>
-              <button type="button" class="page-btn">3</button>
-              <button type="button" class="page-btn" aria-label="Halaman berikutnya">&rsaquo;</button>
-              <button type="button" class="page-btn" aria-label="Halaman berikutnya dua kali">&raquo;</button>
+              <div class="page-chip muted">&laquo;</div>
+              <div class="page-chip muted">&lsaquo;</div>
+              <div class="page-chip active">1</div>
+              <div class="page-chip">2</div>
+              <div class="page-chip">3</div>
+              <div class="page-chip">&rsaquo;</div>
+              <div class="page-chip">&raquo;</div>
             </div>
           </div>
         </div>
@@ -208,16 +168,14 @@
     </main>
   </div>
 
-  <script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function updateWaktu() {
       const now = new Date();
-
       const jam = now.toLocaleTimeString("id-ID", {
         hour: "2-digit",
         minute: "2-digit",
       });
-
       const tanggal = now.toLocaleDateString("id-ID", {
         weekday: "long",
         day: "numeric",

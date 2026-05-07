@@ -6,8 +6,50 @@ if (!isset($_SESSION['login'])) {
     exit;
 }
 
+include '../config/koneksi.php';
+include '../proses/init_tables.php';
+include '../proses/filter_log_harian.php';
+chickguard_init_tables($koneksi);
+
+$search = $_GET['search'] ?? '';
+$page = max(1, (int) ($_GET['page'] ?? 1));
+$logData = ambil_log_harian($koneksi, $search, $page);
+$rows = $logData['rows'];
+$total = $logData['total'];
+$limit = $logData['limit'];
+$page = $logData['page'];
+$totalPages = $logData['total_pages'];
+$search = $logData['search'];
+$shown = count($rows);
+$startData = $total > 0 ? (($page - 1) * $limit) + 1 : 0;
+$endData = $total > 0 ? $startData + $shown - 1 : 0;
+
+function e($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function format_number_or_dash($value, string $unit): string
+{
+    if ($value === null || $value === '') {
+        return '-';
+    }
+
+    return number_format((float) $value, 1) . ' ' . $unit;
+}
+
+function log_page_url(int $page, string $search): string
+{
+    $params = ['page' => $page];
+    if ($search !== '') {
+        $params['search'] = $search;
+    }
+
+    return 'log_harian.php?' . http_build_query($params);
+}
+
 $activePage = 'log_harian';
-$topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin') . ' 👋';
+$topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin');
 $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
 ?>
 <!DOCTYPE html>
@@ -15,7 +57,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChickGuard - Log Harian</title>
+  <title>ChickGuard - Log Harian</title>
   <link rel="icon" href="../assets/icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,21 +83,17 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                 <p class="log-subtitle">Data pencatatan harian suhu, kelembaban, pakan, minum & lampu</p>
               </div>
 
-              <div class="toolbar-actions">
+              <form class="toolbar-actions" method="get" action="log_harian.php">
                 <div class="search-box">
                   <i class="bi bi-search"></i>
-                  <input type="text" class="search-input" placeholder="Cari waktu, status, lampu...">
+                  <input type="text" name="search" class="search-input" value="<?= e($search) ?>" placeholder="Cari waktu, status, lampu...">
                 </div>
 
-                <div class="rows-box">
-                  <span>Baris:</span>
-                  <select class="rows-select">
-                    <option selected>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                  </select>
-                </div>
-              </div>
+                <button type="submit" class="btn btn-sm btn-info text-white fw-semibold">Cari</button>
+                <?php if ($search !== ''): ?>
+                  <a href="log_harian.php" class="btn btn-sm btn-light fw-semibold">Reset</a>
+                <?php endif; ?>
+              </form>
             </div>
 
             <div class="table-wrap">
@@ -65,7 +103,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                     <tr>
                       <th class="check-col"><span class="fake-check"></span></th>
                       <th>Waktu</th>
-                      <th>Suhu (°C)</th>
+                      <th>Suhu (&deg;C)</th>
                       <th>Kelembaban (%)</th>
                       <th>Pakan (kg)</th>
                       <th>Minum (L)</th>
@@ -73,96 +111,24 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>00:00</td>
-                      <td class="cell-strong">26°C</td>
-                      <td class="cell-strong">65%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>01:00</td>
-                      <td class="cell-strong">25°C</td>
-                      <td class="cell-strong">67%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>02:00</td>
-                      <td class="cell-strong">25°C</td>
-                      <td class="cell-strong">68%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>03:00</td>
-                      <td class="cell-strong">24°C</td>
-                      <td class="cell-strong">69%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>04:00</td>
-                      <td class="cell-strong">24°C</td>
-                      <td class="cell-strong">70%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>05:00</td>
-                      <td class="cell-strong">24°C</td>
-                      <td class="cell-strong">71%</td>
-                      <td>-</td>
-                      <td>-</td>
-                      <td class="text-center"><span class="lamp-badge off">Mati</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>06:00</td>
-                      <td class="cell-strong">25°C</td>
-                      <td class="cell-strong">70%</td>
-                      <td>2.5 kg</td>
-                      <td>5.2 L</td>
-                      <td class="text-center"><span class="lamp-badge on">Hidup</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>07:00</td>
-                      <td class="cell-strong">26°C</td>
-                      <td class="cell-strong">68%</td>
-                      <td>-</td>
-                      <td>3.1 L</td>
-                      <td class="text-center"><span class="lamp-badge on">Hidup</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>08:00</td>
-                      <td class="cell-strong">27°C</td>
-                      <td class="cell-strong">66%</td>
-                      <td>-</td>
-                      <td>2.8 L</td>
-                      <td class="text-center"><span class="lamp-badge on">Hidup</span></td>
-                    </tr>
-                    <tr>
-                      <td class="check-col"><span class="fake-check"></span></td>
-                      <td>09:00</td>
-                      <td class="cell-strong">28°C</td>
-                      <td class="cell-strong">64%</td>
-                      <td>-</td>
-                      <td>3.5 L</td>
-                      <td class="text-center"><span class="lamp-badge on">Hidup</span></td>
-                    </tr>
+                    <?php if ($shown === 0): ?>
+                      <tr>
+                        <td colspan="7" class="text-center text-muted py-4">Data log tidak ditemukan.</td>
+                      </tr>
+                    <?php endif; ?>
+
+                    <?php foreach ($rows as $item): ?>
+                      <?php $lampuClass = $item['lampu'] === 'Hidup' ? 'on' : 'off'; ?>
+                      <tr>
+                        <td class="check-col"><span class="fake-check"></span></td>
+                        <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
+                        <td class="cell-strong"><?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C</td>
+                        <td class="cell-strong"><?= e(number_format((float) $item['kelembaban'], 0)) ?>%</td>
+                        <td><?= e(format_number_or_dash($item['pakan'], 'kg')) ?></td>
+                        <td><?= e(format_number_or_dash($item['minum'], 'L')) ?></td>
+                        <td class="text-center"><span class="lamp-badge <?= e($lampuClass) ?>"><?= e($item['lampu']) ?></span></td>
+                      </tr>
+                    <?php endforeach; ?>
                   </tbody>
                 </table>
               </div>
@@ -171,17 +137,17 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
             <div class="table-footer">
               <div class="footer-left">
                 <i class="bi bi-trash3-fill trash-mini"></i>
-                <span>Menampilkan <strong>1 - 10</strong> dari <strong>24</strong> entri</span>
+                <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($total) ?></strong> entri</span>
               </div>
 
               <div class="pagination-wrap">
-                <div class="page-chip muted">&laquo;</div>
-                <div class="page-chip muted">&lsaquo;</div>
-                <div class="page-chip active">1</div>
-                <div class="page-chip">2</div>
-                <div class="page-chip">3</div>
-                <div class="page-chip">&rsaquo;</div>
-                <div class="page-chip">&raquo;</div>
+                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(1, $search)) ?>">&laquo;</a>
+                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(max(1, $page - 1), $search)) ?>">&lsaquo;</a>
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                  <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="<?= e(log_page_url($i, $search)) ?>"><?= e($i) ?></a>
+                <?php endfor; ?>
+                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url(min($totalPages, $page + 1), $search)) ?>">&rsaquo;</a>
+                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url($totalPages, $search)) ?>">&raquo;</a>
               </div>
             </div>
           </div>
@@ -194,19 +160,8 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
   <script>
     function updateWaktu() {
       const now = new Date();
-      const jam = now.toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      const tanggal = now.toLocaleDateString("id-ID", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-
-      document.getElementById("jam").textContent = jam;
-      document.getElementById("tanggal").textContent = tanggal;
+      document.getElementById("jam").textContent = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("tanggal").textContent = now.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
     }
 
     setInterval(updateWaktu, 1000);

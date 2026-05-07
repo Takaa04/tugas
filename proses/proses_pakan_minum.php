@@ -1,0 +1,56 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+include '../config/koneksi.php';
+include 'init_tables.php';
+chickguard_init_tables($koneksi);
+
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+
+function redirect_pakan_minum(string $status): void
+{
+    header("Location: ../pages/pakan_minum.php?status=" . urlencode($status));
+    exit;
+}
+
+if ($action === 'delete') {
+    $id = (int) ($_GET['id'] ?? 0);
+    if ($id <= 0) {
+        redirect_pakan_minum('invalid');
+    }
+
+    $stmt = mysqli_prepare($koneksi, "DELETE FROM jadwal_pakan_minum WHERE id=?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    redirect_pakan_minum('deleted');
+}
+
+$id = (int) ($_POST['id'] ?? 0);
+$jenis = $_POST['jenis'] ?? '';
+$waktu = $_POST['waktu'] ?? '';
+$jumlah = (float) ($_POST['jumlah'] ?? 0);
+$catatan = trim($_POST['catatan'] ?? '');
+$hariInput = $_POST['hari'] ?? [];
+$hari = in_array('Semua Hari', $hariInput, true) ? 'Semua Hari' : implode(', ', $hariInput);
+
+if (!in_array($jenis, ['Pakan', 'Minum'], true) || $waktu === '' || $jumlah <= 0 || $hari === '') {
+    redirect_pakan_minum('invalid');
+}
+
+if ($action === 'update' && $id > 0) {
+    $stmt = mysqli_prepare($koneksi, "UPDATE jadwal_pakan_minum SET jenis=?, waktu=?, jumlah=?, hari=?, catatan=? WHERE id=?");
+    mysqli_stmt_bind_param($stmt, "ssdssi", $jenis, $waktu, $jumlah, $hari, $catatan, $id);
+    mysqli_stmt_execute($stmt);
+    redirect_pakan_minum('updated');
+}
+
+$stmt = mysqli_prepare($koneksi, "INSERT INTO jadwal_pakan_minum (jenis, waktu, jumlah, hari, catatan) VALUES (?, ?, ?, ?, ?)");
+mysqli_stmt_bind_param($stmt, "ssdss", $jenis, $waktu, $jumlah, $hari, $catatan);
+mysqli_stmt_execute($stmt);
+redirect_pakan_minum('created');
+?>

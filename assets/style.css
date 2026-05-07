@@ -904,6 +904,12 @@ body.page-log-harian {
   gap: 1rem;
 }
 
+.action-icons a {
+  color: inherit;
+  line-height: 1;
+  text-decoration: none;
+}
+
 .action-icons .edit {
   color: #6b7280;
 }
@@ -930,6 +936,7 @@ body.page-log-harian {
   display: grid;
   place-items: center;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .page-chip.active {

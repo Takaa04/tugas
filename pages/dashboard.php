@@ -43,8 +43,8 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                 </div>
                 <div class="metric-body">
                   <div class="metric-title">Suhu Kandang</div>
-                  <div class="metric-value">28.5&deg; C</div>
-                  <p class="metric-subtitle">Normal</p>
+                  <div class="metric-value" id="currentSuhu">0&deg; C</div>
+                  <p class="metric-subtitle" id="suhuStatus">Normal</p>
                 </div>
               </div>
             </div>
@@ -56,8 +56,8 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                 </div>
                 <div class="metric-body">
                   <div class="metric-title">Kelembapan</div>
-                  <div class="metric-value">40%</div>
-                  <p class="metric-subtitle">Normal</p>
+                  <div class="metric-value" id="currentLembap">0%</div>
+                  <p class="metric-subtitle" id="lembapStatus">Normal</p>
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                   <div class="metric-title">Status Kandang</div>
                   <div class="status-pill">
                     <span class="status-dot"></span>
-                    <span>Normal</span>
+                    <span id="statusKandang">Normal</span>
                   </div>
                 </div>
               </div>
@@ -110,7 +110,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
       let data = [];
       for (let i = 0; i < length; i++) {
         let random = (Math.random() - 0.5) * fluctuation;
-        data.push((base + random).toFixed(1));
+        data.push(Number((base + random).toFixed(1)));
       }
       return data;
     }
@@ -118,8 +118,18 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
     const labels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
     const suhuData = generateData(30, 3, 7);
     const lembapData = generateData(68, 10, 7);
-    const hitungRataRata = data => data.reduce((total, nilai) => total + parseFloat(nilai), 0) / data.length;
+    const hitungRataRata = data => data.reduce((total, nilai) => total + Number(nilai), 0) / data.length;
+    const suhuTerakhir = suhuData[suhuData.length - 1];
+    const lembapTerakhir = lembapData[lembapData.length - 1];
+    const suhuStatus = suhuTerakhir >= 24 && suhuTerakhir <= 30 ? "Normal" : "Perlu Dicek";
+    const lembapStatus = lembapTerakhir >= 55 && lembapTerakhir <= 75 ? "Normal" : "Perlu Dicek";
+    const statusKandang = suhuStatus === "Normal" && lembapStatus === "Normal" ? "Normal" : "Perlu Dicek";
 
+    document.getElementById("currentSuhu").innerHTML = suhuTerakhir.toFixed(1) + "&deg; C";
+    document.getElementById("currentLembap").textContent = Math.round(lembapTerakhir) + "%";
+    document.getElementById("suhuStatus").textContent = suhuStatus;
+    document.getElementById("lembapStatus").textContent = lembapStatus;
+    document.getElementById("statusKandang").textContent = statusKandang;
     document.getElementById("avgSuhu").innerHTML = hitungRataRata(suhuData).toFixed(1) + "&deg;C";
     document.getElementById("avgLembap").textContent = Math.round(hitungRataRata(lembapData)) + "%";
 

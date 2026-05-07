@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+function e($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -32,6 +40,11 @@
       <div class="subtitle">Masuk ke sistem monitoring kandang</div>
 
       <form action="proses/proses_login.php" method="POST" class="login-form">
+        <?php if (isset($_SESSION['login_success'])): ?>
+          <div class="login-alert success"><?= e($_SESSION['login_success']) ?></div>
+          <?php unset($_SESSION['login_success']); ?>
+        <?php endif; ?>
+
         <label class="label" for="username">Username</label>
         <input id="username" type="text" name="username" class="input-box" placeholder="Masukkan username" required>
 
@@ -56,12 +69,30 @@
   </div>
 
   <div class="modal-backdrop hidden" id="forgotModal">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
-      <button type="button" class="modal-close" id="closeForgotPassword" aria-label="Tutup popup">&times;</button>
-      <h2 id="forgotTitle">Lupa Password</h2>
-      <p>Silakan hubungi admin utama atau pengembang sistem untuk melakukan reset password akun kamu.</p>
-      <div class="modal-actions">
-        <button type="button" class="modal-btn" id="closeForgotPasswordBottom">Tutup</button>
+    <div class="modal-card forgot-password-card" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+      <button type="button" class="modal-close forgot-close" id="closeForgotPassword" aria-label="Tutup popup">&times;</button>
+
+      <img src="assets/logo.png" alt="ChickGuard" class="forgot-logo">
+      <h2 id="forgotTitle">Lupa Password?</h2>
+
+      <?php if (isset($_SESSION['forgot_error'])): ?>
+        <div class="login-alert error"><?= e($_SESSION['forgot_error']) ?></div>
+        <?php unset($_SESSION['forgot_error']); ?>
+      <?php endif; ?>
+
+      <?php if (isset($_SESSION['forgot_success'])): ?>
+        <div class="login-alert success"><?= e($_SESSION['forgot_success']) ?></div>
+        <?php unset($_SESSION['forgot_success']); ?>
+      <?php endif; ?>
+
+      <form action="proses/proses_lupa_password.php" method="POST" class="forgot-form">
+        <input type="email" name="email" class="forgot-input" placeholder="Masukkan email anda" required>
+        <button type="submit" class="forgot-submit">Kirim link reset password</button>
+      </form>
+
+      <div class="forgot-footer">
+        <span class="forgot-footer-icon">i</span>
+        <span>Sistem Monitoring Kandang Ayam</span>
       </div>
     </div>
   </div>
@@ -72,7 +103,6 @@
     const forgotModal = document.getElementById("forgotModal");
     const openForgotPassword = document.getElementById("openForgotPassword");
     const closeForgotPassword = document.getElementById("closeForgotPassword");
-    const closeForgotPasswordBottom = document.getElementById("closeForgotPasswordBottom");
 
     togglePassword.addEventListener("click", function () {
       const isPassword = passwordInput.type === "password";
@@ -93,7 +123,6 @@
 
     openForgotPassword.addEventListener("click", openModal);
     closeForgotPassword.addEventListener("click", closeModal);
-    closeForgotPasswordBottom.addEventListener("click", closeModal);
 
     forgotModal.addEventListener("click", function (event) {
       if (event.target === forgotModal) {
@@ -106,6 +135,10 @@
         closeModal();
       }
     });
+
+    <?php if (isset($_GET['forgot'])): ?>
+      openModal();
+    <?php endif; ?>
   </script>
 </body>
 </html>

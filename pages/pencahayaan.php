@@ -82,15 +82,15 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
               <div class="hero-block centered">
                 <div>
                   <div class="hero-title text-center">Mode Lampu<br>otomatis</div>
-                  <div class="toggle-pill mx-auto"></div>
+                  <button type="button" class="toggle-pill mx-auto is-on" id="autoLampToggle" aria-label="Matikan mode lampu otomatis" aria-pressed="true"></button>
                 </div>
               </div>
 
               <div class="hero-block centered">
-                <div class="hero-icon"><i class="bi bi-lightbulb"></i></div>
+                <div class="hero-icon is-on" id="lampIcon"><i class="bi bi-lightbulb-fill"></i></div>
                 <div>
                   <div class="hero-title">Status Lampu</div>
-                  <div class="status-pill-large" id="lampStatus">Nyala</div>
+                  <div class="status-pill-large is-on" id="lampStatus">Nyala</div>
                 </div>
               </div>
 
@@ -250,8 +250,51 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
     updateWaktu();
 
     const lampStatus = document.getElementById("lampStatus");
-    document.getElementById("turnOnLamp").addEventListener("click", () => lampStatus.textContent = "Nyala");
-    document.getElementById("turnOffLamp").addEventListener("click", () => lampStatus.textContent = "Mati");
+    const lampIcon = document.getElementById("lampIcon");
+    const autoLampToggle = document.getElementById("autoLampToggle");
+    const turnOnLamp = document.getElementById("turnOnLamp");
+    const turnOffLamp = document.getElementById("turnOffLamp");
+    let isLampOn = true;
+    let isAutoMode = true;
+
+    function renderLampState() {
+      lampStatus.textContent = isLampOn ? "Nyala" : "Mati";
+      lampStatus.classList.toggle("is-on", isLampOn);
+      lampStatus.classList.toggle("is-off", !isLampOn);
+
+      lampIcon.classList.toggle("is-on", isLampOn);
+      lampIcon.classList.toggle("is-off", !isLampOn);
+      lampIcon.innerHTML = isLampOn ? '<i class="bi bi-lightbulb-fill"></i>' : '<i class="bi bi-lightbulb"></i>';
+
+      autoLampToggle.classList.toggle("is-on", isAutoMode);
+      autoLampToggle.setAttribute("aria-pressed", isAutoMode ? "true" : "false");
+      autoLampToggle.setAttribute("aria-label", isAutoMode ? "Matikan mode lampu otomatis" : "Nyalakan mode lampu otomatis");
+
+      turnOnLamp.classList.toggle("is-active", isLampOn);
+      turnOffLamp.classList.toggle("is-active", !isLampOn);
+    }
+
+    turnOnLamp.addEventListener("click", () => {
+      isLampOn = true;
+      isAutoMode = false;
+      renderLampState();
+    });
+
+    turnOffLamp.addEventListener("click", () => {
+      isLampOn = false;
+      isAutoMode = false;
+      renderLampState();
+    });
+
+    autoLampToggle.addEventListener("click", () => {
+      isAutoMode = !isAutoMode;
+      if (isAutoMode) {
+        isLampOn = true;
+      }
+      renderLampState();
+    });
+
+    renderLampState();
 
     const lightModal = document.getElementById("lightModal");
     const lightFormAction = document.getElementById("lightFormAction");

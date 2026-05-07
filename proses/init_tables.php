@@ -1,6 +1,19 @@
 <?php
 function chickguard_init_tables(mysqli $koneksi): void
 {
+    ensure_users_email_column($koneksi);
+
+    mysqli_query($koneksi, "CREATE TABLE IF NOT EXISTS password_resets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token VARCHAR(64) NOT NULL UNIQUE,
+        expires_at DATETIME NOT NULL,
+        used_at DATETIME DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX (user_id),
+        INDEX (token)
+    )");
+
     mysqli_query($koneksi, "CREATE TABLE IF NOT EXISTS jadwal_pakan_minum (
         id INT AUTO_INCREMENT PRIMARY KEY,
         jenis ENUM('Pakan','Minum') NOT NULL,
@@ -35,6 +48,16 @@ function chickguard_init_tables(mysqli $koneksi): void
     seed_jadwal_pakan_minum($koneksi);
     seed_jadwal_pencahayaan($koneksi);
     seed_log_harian($koneksi);
+}
+
+function ensure_users_email_column(mysqli $koneksi): void
+{
+    $result = mysqli_query($koneksi, "SHOW COLUMNS FROM users LIKE 'email'");
+    if ($result && mysqli_num_rows($result) === 0) {
+        mysqli_query($koneksi, "ALTER TABLE users ADD email VARCHAR(100) NULL UNIQUE AFTER username");
+    }
+
+    mysqli_query($koneksi, "UPDATE users SET email='admin@chickguard.local' WHERE username='admin' AND (email IS NULL OR email='')");
 }
 
 function seed_jadwal_pakan_minum(mysqli $koneksi): void

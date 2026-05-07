@@ -180,7 +180,6 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
             <div class="table-footer">
               <div class="footer-left">
-                <i class="bi bi-trash3-fill trash-mini"></i>
                 <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($totalData) ?></strong> entri</span>
               </div>
 

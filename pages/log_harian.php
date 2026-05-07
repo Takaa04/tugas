@@ -136,7 +136,6 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
 
             <div class="table-footer">
               <div class="footer-left">
-                <i class="bi bi-trash3-fill trash-mini"></i>
                 <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($total) ?></strong> entri</span>
               </div>
 

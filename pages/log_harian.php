@@ -49,8 +49,8 @@ function log_page_url(int $page, string $search): string
 }
 
 $activePage = 'log_harian';
-$topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin');
-$topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
+$topbarTitle = 'Log Harian';
+$topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lampu kandang';
 ?>
 <!DOCTYPE html>
 <html lang="id">

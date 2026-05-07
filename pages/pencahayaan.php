@@ -44,8 +44,8 @@ $statusMessages = [
 ];
 
 $activePage = 'pencahayaan';
-$topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin');
-$topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
+$topbarTitle = 'Pencahayaan';
+$topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang';
 ?>
 <!DOCTYPE html>
 <html lang="id">

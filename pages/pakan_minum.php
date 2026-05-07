@@ -167,7 +167,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
                              data-jumlah="<?= e($item['jumlah']) ?>"
                              data-hari="<?= e($item['hari']) ?>"
                              data-catatan="<?= e($item['catatan']) ?>"></i>
-                          <a href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>" onclick="return confirm('Hapus jadwal ini?')">
+                          <a href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>" class="js-open-delete-modal" data-delete-href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>">
                             <i class="bi bi-trash3 delete"></i>
                           </a>
                         </div>
@@ -262,6 +262,20 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     </div>
   </div>
 
+  <div class="delete-modal-backdrop hidden" id="deleteConfirmModal" aria-hidden="true">
+    <div class="delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+      <div class="delete-modal-icon">
+        <i class="bi bi-trash3-fill"></i>
+      </div>
+      <h2 id="deleteConfirmTitle">Konfirmasi Hapus</h2>
+      <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.</p>
+      <div class="delete-modal-actions">
+        <button type="button" class="delete-modal-btn secondary" id="cancelDeleteBtn">Batal</button>
+        <a href="#" class="delete-modal-btn primary" id="confirmDeleteBtn">Ya, Hapus</a>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function updateWaktu() {
@@ -287,6 +301,9 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     const scheduleJumlah = document.getElementById("scheduleJumlah");
     const scheduleCatatan = document.getElementById("scheduleCatatan");
     const scheduleModalTitle = document.getElementById("scheduleModalTitle");
+    const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
     const feedPercent = document.getElementById("feedPercent");
     const waterPercent = document.getElementById("waterPercent");
     const feedStockText = document.getElementById("feedStockText");
@@ -344,6 +361,20 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       scheduleModal.setAttribute("aria-hidden", "true");
     }
 
+    function openDeleteModal(href) {
+      confirmDeleteBtn.setAttribute("href", href);
+      deleteConfirmModal.classList.remove("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeDeleteModal() {
+      deleteConfirmModal.classList.add("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "true");
+      confirmDeleteBtn.setAttribute("href", "#");
+      document.body.classList.remove("modal-open");
+    }
+
     document.querySelector(".js-open-schedule-modal").addEventListener("click", () => {
       clearForm();
       openScheduleModal();
@@ -355,6 +386,14 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     scheduleResetBtn.addEventListener("click", () => scheduleCheckboxes.forEach((checkbox) => checkbox.checked = false));
     document.getElementById("feedActionBtn").addEventListener("click", () => useStock("feed"));
     document.getElementById("waterActionBtn").addEventListener("click", () => useStock("water"));
+    document.querySelectorAll(".js-open-delete-modal").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openDeleteModal(button.dataset.deleteHref);
+      });
+    });
+    cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+    deleteConfirmModal.addEventListener("click", (event) => { if (event.target === deleteConfirmModal) closeDeleteModal(); });
 
     document.querySelectorAll(".js-edit-schedule").forEach((button) => {
       button.addEventListener("click", () => {
@@ -369,6 +408,10 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
         scheduleCheckboxes.forEach((checkbox) => checkbox.checked = days.includes(checkbox.value));
         openScheduleModal();
       });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) closeDeleteModal();
     });
 
     renderStock("feed");

@@ -144,7 +144,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
                                data-durasi="<?= e($item['durasi']) ?>"
                                data-hari="<?= e($item['hari']) ?>"
                                data-catatan="<?= e($item['catatan']) ?>"></i>
-                            <a href="../proses/proses_pencahayaan.php?action=delete&id=<?= e($item['id']) ?>" onclick="return confirm('Hapus jadwal lampu ini?')">
+                            <a href="../proses/proses_pencahayaan.php?action=delete&id=<?= e($item['id']) ?>" class="js-open-delete-modal" data-delete-href="../proses/proses_pencahayaan.php?action=delete&id=<?= e($item['id']) ?>">
                               <i class="bi bi-trash3 delete"></i>
                             </a>
                           </div>
@@ -238,6 +238,20 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
     </div>
   </div>
 
+  <div class="delete-modal-backdrop hidden" id="deleteConfirmModal" aria-hidden="true">
+    <div class="delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+      <div class="delete-modal-icon">
+        <i class="bi bi-trash3-fill"></i>
+      </div>
+      <h2 id="deleteConfirmTitle">Konfirmasi Hapus</h2>
+      <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.</p>
+      <div class="delete-modal-actions">
+        <button type="button" class="delete-modal-btn secondary" id="cancelDeleteBtn">Batal</button>
+        <a href="#" class="delete-modal-btn primary" id="confirmDeleteBtn">Ya, Hapus</a>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function updateWaktu() {
@@ -305,6 +319,9 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
     const lightCatatan = document.getElementById("lightCatatan");
     const lightModalTitle = document.getElementById("lightModalTitle");
     const lightCheckboxes = lightModal.querySelectorAll(".schedule-day input");
+    const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
     function clearLightForm() {
       lightFormAction.value = "create";
@@ -329,6 +346,20 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
       document.body.classList.remove("modal-open");
     }
 
+    function openDeleteModal(href) {
+      confirmDeleteBtn.setAttribute("href", href);
+      deleteConfirmModal.classList.remove("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeDeleteModal() {
+      deleteConfirmModal.classList.add("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "true");
+      confirmDeleteBtn.setAttribute("href", "#");
+      document.body.classList.remove("modal-open");
+    }
+
     document.querySelector(".js-open-light-modal").addEventListener("click", () => {
       clearLightForm();
       openLightModal();
@@ -337,6 +368,14 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
     document.getElementById("lightResetBtn").addEventListener("click", () => lightCheckboxes.forEach((checkbox) => checkbox.checked = false));
     lightModal.addEventListener("click", (event) => { if (event.target === lightModal) closeLightModal(); });
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !lightModal.classList.contains("hidden")) closeLightModal(); });
+    document.querySelectorAll(".js-open-delete-modal").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openDeleteModal(button.dataset.deleteHref);
+      });
+    });
+    cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+    deleteConfirmModal.addEventListener("click", (event) => { if (event.target === deleteConfirmModal) closeDeleteModal(); });
 
     document.querySelectorAll(".js-edit-light").forEach((button) => {
       button.addEventListener("click", () => {
@@ -351,6 +390,10 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
         lightCheckboxes.forEach((checkbox) => checkbox.checked = days.includes(checkbox.value));
         openLightModal();
       });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) closeDeleteModal();
     });
   </script>
 </body>

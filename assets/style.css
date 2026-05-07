@@ -1436,6 +1436,8 @@ body.page-pakan-minum .edit {
   justify-content: center;
   padding: 18px;
   background: rgba(33, 33, 33, 0.78);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .schedule-modal-backdrop.hidden {

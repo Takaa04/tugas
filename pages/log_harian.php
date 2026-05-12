@@ -38,6 +38,12 @@ function format_number_or_dash($value, string $unit): string
     return number_format((float) $value, 1) . ' ' . $unit;
 }
 
+function dash_if_empty($value): string
+{
+    $value = trim((string) $value);
+    return $value === '' ? '-' : $value;
+}
+
 function log_page_url(int $page, string $search): string
 {
     $params = ['page' => $page];
@@ -102,18 +108,17 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
                   <thead>
                     <tr>
                       <th class="check-col"><span class="fake-check"></span></th>
+                      <th>Hari</th>
                       <th>Waktu</th>
-                      <th>Suhu (&deg;C)</th>
-                      <th>Kelembaban (%)</th>
-                      <th>Pakan (kg)</th>
-                      <th>Minum (L)</th>
+                      <th>Suhu & Kelembapan</th>
+                      <th>Pakan & Minum</th>
                       <th class="text-center">Lampu</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php if ($shown === 0): ?>
                       <tr>
-                        <td colspan="7" class="text-center text-muted py-4">Data log tidak ditemukan.</td>
+                        <td colspan="6" class="text-center text-muted py-4">Data log tidak ditemukan.</td>
                       </tr>
                     <?php endif; ?>
 
@@ -121,11 +126,16 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
                       <?php $lampuClass = $item['lampu'] === 'Hidup' ? 'on' : 'off'; ?>
                       <tr>
                         <td class="check-col"><span class="fake-check"></span></td>
+                        <td><?= e(dash_if_empty($item['jadwal_hari'] ?? '')) ?></td>
                         <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
-                        <td class="cell-strong"><?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C</td>
-                        <td class="cell-strong"><?= e(number_format((float) $item['kelembaban'], 0)) ?>%</td>
-                        <td><?= e(format_number_or_dash($item['pakan'], 'kg')) ?></td>
-                        <td><?= e(format_number_or_dash($item['minum'], 'L')) ?></td>
+                        <td class="cell-strong">
+                          <?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C /
+                          <?= e(number_format((float) $item['kelembaban'], 0)) ?>%
+                        </td>
+                        <td>
+                          Pakan: <?= e(dash_if_empty($item['jadwal_pakan'] ?? '')) ?><br>
+                          Minum: <?= e(dash_if_empty($item['jadwal_minum'] ?? '')) ?>
+                        </td>
                         <td class="text-center"><span class="lamp-badge <?= e($lampuClass) ?>"><?= e($item['lampu']) ?></span></td>
                       </tr>
                     <?php endforeach; ?>

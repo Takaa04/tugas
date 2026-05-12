@@ -21,18 +21,29 @@ function ambil_log_harian(mysqli $koneksi, string $search = '', int $page = 1): 
     $types = '';
 
     if ($search !== '') {
-        $where = "WHERE DATE_FORMAT(waktu, '%H:%i') LIKE ?
-            OR suhu LIKE ?
-            OR kelembaban LIKE ?
-            OR pakan LIKE ?
-            OR minum LIKE ?
-            OR lampu LIKE ?";
+        $where = "WHERE DATE_FORMAT(lh.waktu, '%H:%i') LIKE ?
+            OR lh.suhu LIKE ?
+            OR lh.kelembaban LIKE ?
+            OR lh.lampu LIKE ?
+            OR jadwal.jadwal_hari LIKE ?
+            OR jadwal.jadwal_pakan LIKE ?
+            OR jadwal.jadwal_minum LIKE ?";
         $keyword = '%' . $search . '%';
-        $params = [$keyword, $keyword, $keyword, $keyword, $keyword, $keyword];
-        $types = 'ssssss';
+        $params = [$keyword, $keyword, $keyword, $keyword, $keyword, $keyword, $keyword];
+        $types = 'sssssss';
     }
 
-    $countSql = "SELECT COUNT(*) AS total FROM log_harian $where";
+    $jadwalJoin = "LEFT JOIN (
+        SELECT
+            waktu,
+            GROUP_CONCAT(DISTINCT hari SEPARATOR ', ') AS jadwal_hari,
+            GROUP_CONCAT(CASE WHEN jenis = 'Pakan' THEN CONCAT(CAST(jumlah AS DECIMAL(8,1)), ' kg') END SEPARATOR ', ') AS jadwal_pakan,
+            GROUP_CONCAT(CASE WHEN jenis = 'Minum' THEN CONCAT(CAST(jumlah AS DECIMAL(8,1)), ' L') END SEPARATOR ', ') AS jadwal_minum
+        FROM jadwal_pakan_minum
+        GROUP BY waktu
+    ) jadwal ON jadwal.waktu = lh.waktu";
+
+    $countSql = "SELECT COUNT(*) AS total FROM log_harian lh $jadwalJoin $where";
     $countStmt = mysqli_prepare($koneksi, $countSql);
     if ($types !== '') {
         bind_params($countStmt, $types, $params);
@@ -47,7 +58,16 @@ function ambil_log_harian(mysqli $koneksi, string $search = '', int $page = 1): 
         $offset = ($page - 1) * $limit;
     }
 
-    $sql = "SELECT * FROM log_harian $where ORDER BY waktu ASC LIMIT ? OFFSET ?";
+    $sql = "SELECT
+            lh.*,
+            jadwal.jadwal_hari,
+            jadwal.jadwal_pakan,
+            jadwal.jadwal_minum
+        FROM log_harian lh
+        $jadwalJoin
+        $where
+        ORDER BY lh.waktu ASC
+        LIMIT ? OFFSET ?";
     $stmt = mysqli_prepare($koneksi, $sql);
     if ($types !== '') {
         $paramsWithLimit = array_merge($params, [$limit, $offset]);

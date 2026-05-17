@@ -29,10 +29,10 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
 </head>
 <body class="dashboard-page">
   <div class="dashboard-shell d-lg-flex">
-    <?php include '../componets/sidebar.php'; ?>
+    <?php include '../components/sidebar.php'; ?>
 
     <main class="main-content">
-      <?php include '../componets/topbar.php'; ?>
+      <?php include '../components/topbar.php'; ?>
 
       <section class="content-section">
         <div class="container-fluid px-0">

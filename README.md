@@ -146,7 +146,7 @@ chick/
 |   |-- proses_log_harian.php
 |   |-- filter_log_harian.php
 |   `-- logout.php
-|-- componets/
+|-- components/
 |   |-- sidebar.php
 |   `-- topbar.php
 `-- assets/
@@ -155,7 +155,7 @@ chick/
     `-- vendor/
 ```
 
-Catatan: nama folder shared layout di repo ini memang `componets`.
+Catatan: shared layout disimpan di folder `components`.
 
 ## Main Pages
 

@@ -85,10 +85,10 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
 </head>
 <body class="page-pencahayaan">
   <div class="dashboard-shell d-lg-flex">
-    <?php include '../componets/sidebar.php'; ?>
+    <?php include '../components/sidebar.php'; ?>
 
     <main class="main-content">
-      <?php include '../componets/topbar.php'; ?>
+      <?php include '../components/topbar.php'; ?>
 
       <section class="content-section">
         <div class="container-fluid px-0">

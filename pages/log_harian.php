@@ -200,6 +200,20 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
     </main>
   </div>
 
+  <div class="delete-modal-backdrop hidden" id="deleteConfirmModal" aria-hidden="true">
+    <div class="delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+      <div class="delete-modal-icon">
+        <i class="bi bi-trash3-fill"></i>
+      </div>
+      <h2 id="deleteConfirmTitle">Konfirmasi Hapus</h2>
+      <p>Apakah Anda yakin ingin menghapus semua log yang dipilih? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.</p>
+      <div class="delete-modal-actions">
+        <button type="button" class="delete-modal-btn secondary" id="cancelDeleteBtn">Batal</button>
+        <button type="button" class="delete-modal-btn primary" id="confirmDeleteBtn">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function updateWaktu() {
@@ -215,6 +229,9 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
     const logRowCheckboxes = document.querySelectorAll(".log-row-checkbox");
     const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
     const bulkDeleteForm = document.getElementById("bulkDeleteForm");
+    const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
     function syncBulkDeleteState() {
       const checkedCount = Array.from(logRowCheckboxes).filter((item) => item.checked).length;
@@ -223,6 +240,18 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
         deleteSelectedBtn.disabled = checkedCount === 0;
         deleteSelectedBtn.querySelector("span").textContent = checkedCount > 0 ? `Hapus Semua (${checkedCount})` : "Hapus Semua";
       }
+    }
+
+    function openDeleteModal() {
+      deleteConfirmModal.classList.remove("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeDeleteModal() {
+      deleteConfirmModal.classList.add("hidden");
+      deleteConfirmModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
     }
 
     if (selectAllLogs) {
@@ -254,12 +283,35 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
           event.preventDefault();
           return;
         }
+        event.preventDefault();
+        openDeleteModal();
+      });
+    }
 
-        if (!window.confirm("Hapus semua log yang dipilih? Tindakan ini tidak dapat dibatalkan.")) {
-          event.preventDefault();
+    if (confirmDeleteBtn) {
+      confirmDeleteBtn.addEventListener("click", () => {
+        closeDeleteModal();
+        bulkDeleteForm.submit();
+      });
+    }
+
+    if (cancelDeleteBtn) {
+      cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+    }
+
+    if (deleteConfirmModal) {
+      deleteConfirmModal.addEventListener("click", (event) => {
+        if (event.target === deleteConfirmModal) {
+          closeDeleteModal();
         }
       });
     }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && deleteConfirmModal && !deleteConfirmModal.classList.contains("hidden")) {
+        closeDeleteModal();
+      }
+    });
 
     syncBulkDeleteState();
   </script>

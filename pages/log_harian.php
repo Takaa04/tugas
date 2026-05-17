@@ -23,6 +23,10 @@ $search = $logData['search'];
 $shown = count($rows);
 $startData = $total > 0 ? (($page - 1) * $limit) + 1 : 0;
 $endData = $total > 0 ? $startData + $shown - 1 : 0;
+$statusMessages = [
+    'deleted' => 'Log harian yang dipilih berhasil dihapus.',
+    'invalid' => 'Pilih minimal satu log harian untuk dihapus.',
+];
 
 function e($value): string
 {
@@ -42,6 +46,11 @@ function dash_if_empty($value): string
 {
     $value = trim((string) $value);
     return $value === '' ? '-' : $value;
+}
+
+function checkbox_id($prefix, $value): string
+{
+    return preg_replace('/[^a-zA-Z0-9_-]/', '-', $prefix . '-' . $value);
 }
 
 function log_page_url(int $page, string $search): string
@@ -83,6 +92,12 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
       <section class="content-section">
         <div class="container-fluid px-0">
           <div class="card-soft log-card">
+            <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
+              <div class="alert alert-<?= $_GET['status'] === 'invalid' ? 'warning' : 'success' ?> mb-3">
+                <?= e($statusMessages[$_GET['status']]) ?>
+              </div>
+            <?php endif; ?>
+
             <div class="log-toolbar">
               <div>
                 <h2 class="log-title">Log Harian Kandang</h2>
@@ -102,63 +117,83 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
               </form>
             </div>
 
-            <div class="table-wrap">
-              <div class="table-responsive">
-                <table class="table data-table log-table align-middle">
-                  <thead>
-                    <tr>
-                      <th class="check-col"><span class="fake-check"></span></th>
-                      <th>Hari</th>
-                      <th>Waktu</th>
-                      <th>Suhu & Kelembapan</th>
-                      <th>Pakan & Minum</th>
-                      <th class="text-center">Lampu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php if ($shown === 0): ?>
+            <form method="post" action="../proses/proses_log_harian.php" id="bulkDeleteForm">
+              <input type="hidden" name="action" value="delete_selected">
+
+              <div class="table-wrap">
+                <div class="table-responsive">
+                  <table class="table data-table log-table align-middle">
+                    <thead>
                       <tr>
-                        <td colspan="6" class="text-center text-muted py-4">Data log tidak ditemukan.</td>
+                        <th class="check-col">
+                          <label class="schedule-day log-check">
+                            <input type="checkbox" id="selectAllLogs">
+                            <span><span class="visually-hidden">Pilih semua log</span></span>
+                          </label>
+                        </th>
+                        <th>Hari</th>
+                        <th>Waktu</th>
+                        <th>Suhu & Kelembapan</th>
+                        <th>Pakan & Minum</th>
+                        <th class="text-center">Lampu</th>
                       </tr>
-                    <?php endif; ?>
+                    </thead>
+                    <tbody>
+                      <?php if ($shown === 0): ?>
+                        <tr>
+                          <td colspan="6" class="text-center text-muted py-4">Data log tidak ditemukan.</td>
+                        </tr>
+                      <?php endif; ?>
 
-                    <?php foreach ($rows as $item): ?>
-                      <?php $lampuClass = $item['lampu'] === 'Hidup' ? 'on' : 'off'; ?>
-                      <tr>
-                        <td class="check-col"><span class="fake-check"></span></td>
-                        <td><?= e(dash_if_empty($item['jadwal_hari'] ?? '')) ?></td>
-                        <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
-                        <td class="cell-strong">
-                          <?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C /
-                          <?= e(number_format((float) $item['kelembaban'], 0)) ?>%
-                        </td>
-                        <td>
-                          Pakan: <?= e(dash_if_empty($item['jadwal_pakan'] ?? '')) ?><br>
-                          Minum: <?= e(dash_if_empty($item['jadwal_minum'] ?? '')) ?>
-                        </td>
-                        <td class="text-center"><span class="lamp-badge <?= e($lampuClass) ?>"><?= e($item['lampu']) ?></span></td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
+                      <?php foreach ($rows as $item): ?>
+                        <?php $lampuClass = $item['lampu'] === 'Hidup' ? 'on' : 'off'; ?>
+                        <?php $rowCheckboxId = checkbox_id('log-row', ($item['id'] ?? '') . '-' . ($item['waktu'] ?? '')); ?>
+                        <tr>
+                          <td class="check-col">
+                            <label class="schedule-day log-check" for="<?= e($rowCheckboxId) ?>">
+                              <input type="checkbox" id="<?= e($rowCheckboxId) ?>" class="log-row-checkbox" name="selected_logs[]" value="<?= e($item['id'] ?? $item['waktu']) ?>">
+                              <span><span class="visually-hidden">Pilih log pada <?= e(date('H:i', strtotime($item['waktu']))) ?></span></span>
+                            </label>
+                          </td>
+                          <td><?= e(dash_if_empty($item['jadwal_hari'] ?? '')) ?></td>
+                          <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
+                          <td class="cell-strong">
+                            <?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C /
+                            <?= e(number_format((float) $item['kelembaban'], 0)) ?>%
+                          </td>
+                          <td>
+                            Pakan: <?= e(dash_if_empty($item['jadwal_pakan'] ?? '')) ?><br>
+                            Minum: <?= e(dash_if_empty($item['jadwal_minum'] ?? '')) ?>
+                          </td>
+                          <td class="text-center"><span class="lamp-badge <?= e($lampuClass) ?>"><?= e($item['lampu']) ?></span></td>
+                        </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
 
-            <div class="table-footer">
-              <div class="footer-left">
-                <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($total) ?></strong> entri</span>
-              </div>
+              <div class="table-footer">
+                <button type="submit" class="log-delete-btn" id="deleteSelectedBtn" disabled>
+                  <i class="bi bi-trash3-fill"></i>
+                  <span>Hapus Semua</span>
+                </button>
 
-              <div class="pagination-wrap">
-                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(1, $search)) ?>">&laquo;</a>
-                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(max(1, $page - 1), $search)) ?>">&lsaquo;</a>
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                  <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="<?= e(log_page_url($i, $search)) ?>"><?= e($i) ?></a>
-                <?php endfor; ?>
-                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url(min($totalPages, $page + 1), $search)) ?>">&rsaquo;</a>
-                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url($totalPages, $search)) ?>">&raquo;</a>
+                <div class="footer-left">
+                  <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($total) ?></strong> entri</span>
+                </div>
+
+                <div class="pagination-wrap">
+                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(1, $search)) ?>">&laquo;</a>
+                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(max(1, $page - 1), $search)) ?>">&lsaquo;</a>
+                  <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="<?= e(log_page_url($i, $search)) ?>"><?= e($i) ?></a>
+                  <?php endfor; ?>
+                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url(min($totalPages, $page + 1), $search)) ?>">&rsaquo;</a>
+                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url($totalPages, $search)) ?>">&raquo;</a>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </section>
@@ -175,6 +210,58 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
 
     setInterval(updateWaktu, 1000);
     updateWaktu();
+
+    const selectAllLogs = document.getElementById("selectAllLogs");
+    const logRowCheckboxes = document.querySelectorAll(".log-row-checkbox");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    const bulkDeleteForm = document.getElementById("bulkDeleteForm");
+
+    function syncBulkDeleteState() {
+      const checkedCount = Array.from(logRowCheckboxes).filter((item) => item.checked).length;
+
+      if (deleteSelectedBtn) {
+        deleteSelectedBtn.disabled = checkedCount === 0;
+        deleteSelectedBtn.querySelector("span").textContent = checkedCount > 0 ? `Hapus Semua (${checkedCount})` : "Hapus Semua";
+      }
+    }
+
+    if (selectAllLogs) {
+      selectAllLogs.addEventListener("change", () => {
+        logRowCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAllLogs.checked;
+        });
+        syncBulkDeleteState();
+      });
+    }
+
+    logRowCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        if (!selectAllLogs) {
+          return;
+        }
+
+        const allChecked = Array.from(logRowCheckboxes).every((item) => item.checked);
+        selectAllLogs.checked = allChecked;
+        syncBulkDeleteState();
+      });
+    });
+
+    if (bulkDeleteForm) {
+      bulkDeleteForm.addEventListener("submit", (event) => {
+        const hasSelected = Array.from(logRowCheckboxes).some((item) => item.checked);
+
+        if (!hasSelected) {
+          event.preventDefault();
+          return;
+        }
+
+        if (!window.confirm("Hapus semua log yang dipilih? Tindakan ini tidak dapat dibatalkan.")) {
+          event.preventDefault();
+        }
+      });
+    }
+
+    syncBulkDeleteState();
   </script>
 </body>
 </html>

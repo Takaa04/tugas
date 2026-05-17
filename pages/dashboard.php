@@ -16,7 +16,7 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ChickGuard Dashboard</title>
-  <link rel="icon" href="../assets/icon.png" type="image/png">
+  <link rel="icon" href="../assets/images/branding/icon.png" type="image/png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,8 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 <body class="dashboard-page">
   <div class="dashboard-shell d-lg-flex">
@@ -115,6 +116,15 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
       return data;
     }
 
+    function clamp(nilai, min, max) {
+      return Math.min(max, Math.max(min, nilai));
+    }
+
+    function generateNextValue(current, min, max, step) {
+      const delta = (Math.random() - 0.5) * step;
+      return Number(clamp(current + delta, min, max).toFixed(1));
+    }
+
     const labels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
     const suhuData = generateData(30, 3, 7);
     const lembapData = generateData(68, 10, 7);
@@ -188,6 +198,19 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
         }
       }
     });
+
+    let currentSuhuLive = suhuTerakhir;
+    let currentLembapLive = lembapTerakhir;
+
+    function updateSensorDisplayOnly() {
+      currentSuhuLive = generateNextValue(currentSuhuLive, 23, 33, 2.4);
+      currentLembapLive = generateNextValue(currentLembapLive, 52, 80, 8);
+
+      document.getElementById("currentSuhu").innerHTML = currentSuhuLive.toFixed(1) + "&deg; C";
+      document.getElementById("currentLembap").textContent = Math.round(currentLembapLive) + "%";
+    }
+
+    window.setInterval(updateSensorDisplayOnly, 300e0);
 
     function updateWaktu() {
       const now = new Date();

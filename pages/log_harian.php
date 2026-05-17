@@ -89,14 +89,15 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChickGuard - Log Harian</title>
-  <link rel="icon" href="../assets/icon.png" type="image/png">
+  <link rel="icon" href="../assets/images/branding/icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/log_harian.css">
 </head>
 <body class="page-log-harian">
   <div class="dashboard-shell d-lg-flex">
@@ -188,7 +189,7 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
               <div class="table-footer">
                 <button type="submit" class="log-delete-btn" id="deleteSelectedBtn" disabled>
                   <i class="bi bi-trash3-fill"></i>
-                  <span>Hapus Semua</span>
+                  <span>Hapus</span>
                 </button>
 
                 <div class="footer-left">
@@ -280,7 +281,7 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
 
       if (deleteSelectedBtn) {
         deleteSelectedBtn.disabled = checkedCount === 0;
-        deleteSelectedBtn.querySelector("span").textContent = checkedCount > 0 ? `Hapus Semua (${checkedCount})` : "Hapus Semua";
+        deleteSelectedBtn.querySelector("span").textContent = checkedCount > 0 ? `Hapus (${checkedCount})` : "Hapus";
       }
     }
 

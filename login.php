@@ -12,12 +12,12 @@ function e($value): string
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login Admin</title>
-  <link rel="icon" href="assets/icon.png" type="image/png">
+  <link rel="icon" href="assets/images/branding/icon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body class="login-page">
   <div class="container">
@@ -35,7 +35,7 @@ function e($value): string
     <div class="scene scene-person-right" aria-hidden="true"></div>
 
     <div class="card">
-      <img class="logo" src="assets/logo.png" alt="Logo ChickGuard">
+      <img class="logo" src="assets/images/branding/logo.png" alt="Logo ChickGuard">
 
       <div class="title">Login Admin</div>
       <div class="subtitle">Masuk ke sistem monitoring kandang</div>
@@ -64,7 +64,7 @@ function e($value): string
 
       <div class="footer">
         <div class="footer-label">Powered by</div>
-        <img src="assets/footer.png" alt="Logo footer" class="footer-logo">
+        <img src="assets/images/branding/footer.png" alt="Logo footer" class="footer-logo">
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@ function e($value): string
     <div class="modal-card forgot-password-card" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
       <button type="button" class="modal-close forgot-close" id="closeForgotPassword" aria-label="Tutup popup">&times;</button>
 
-      <img src="assets/logo.png" alt="ChickGuard" class="forgot-logo">
+      <img src="assets/images/branding/logo.png" alt="ChickGuard" class="forgot-logo">
       <h2 id="forgotTitle">Lupa Password?</h2>
 
       <?php if (isset($_SESSION['forgot_error'])): ?>

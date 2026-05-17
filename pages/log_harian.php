@@ -13,7 +13,13 @@ chickguard_init_tables($koneksi);
 
 $search = $_GET['search'] ?? '';
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$logData = ambil_log_harian($koneksi, $search, $page);
+$rowsPerPage = (int) ($_GET['rows'] ?? 5);
+$allowedRowsPerPage = [5, 10, 20, 50];
+if (!in_array($rowsPerPage, $allowedRowsPerPage, true)) {
+    $rowsPerPage = 5;
+}
+
+$logData = ambil_log_harian($koneksi, $search, $page, $rowsPerPage);
 $rows = $logData['rows'];
 $total = $logData['total'];
 $limit = $logData['limit'];
@@ -63,9 +69,9 @@ function checkbox_id($prefix, $value): string
     return preg_replace('/[^a-zA-Z0-9_-]/', '-', $prefix . '-' . $value);
 }
 
-function log_page_url(int $page, string $search): string
+function log_page_url(int $page, string $search, int $rows): string
 {
-    $params = ['page' => $page];
+    $params = ['page' => $page, 'rows' => $rows];
     if ($search !== '') {
         $params['search'] = $search;
     }
@@ -109,14 +115,16 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
               </div>
 
               <form class="toolbar-actions" method="get" action="log_harian.php">
+                <input type="hidden" name="rows" value="<?= e($limit) ?>">
                 <div class="search-box">
-                  <i class="bi bi-search"></i>
                   <input type="text" name="search" class="search-input" value="<?= e($search) ?>" placeholder="Cari waktu, status, lampu...">
                 </div>
 
-                <button type="submit" class="btn btn-sm btn-info text-white fw-semibold">Cari</button>
+                <button type="submit" class="search-submit-btn" aria-label="Cari">
+                  <i class="bi bi-search"></i>
+                </button>
                 <?php if ($search !== ''): ?>
-                  <a href="log_harian.php" class="btn btn-sm btn-light fw-semibold">Reset</a>
+                  <a href="log_harian.php?rows=<?= e($limit) ?>" class="btn btn-sm btn-light fw-semibold">Reset</a>
                 <?php endif; ?>
               </form>
             </div>
@@ -187,14 +195,25 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
                   <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($total) ?></strong> entri</span>
                 </div>
 
-                <div class="pagination-wrap">
-                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(1, $search)) ?>">&laquo;</a>
-                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(max(1, $page - 1), $search)) ?>">&lsaquo;</a>
-                  <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="<?= e(log_page_url($i, $search)) ?>"><?= e($i) ?></a>
-                  <?php endfor; ?>
-                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url(min($totalPages, $page + 1), $search)) ?>">&rsaquo;</a>
-                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url($totalPages, $search)) ?>">&raquo;</a>
+                <div class="footer-right">
+                  <div class="pagination-wrap">
+                    <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(1, $search, $limit)) ?>">&laquo;</a>
+                    <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="<?= e(log_page_url(max(1, $page - 1), $search, $limit)) ?>">&lsaquo;</a>
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                      <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="<?= e(log_page_url($i, $search, $limit)) ?>"><?= e($i) ?></a>
+                    <?php endfor; ?>
+                    <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url(min($totalPages, $page + 1), $search, $limit)) ?>">&rsaquo;</a>
+                    <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="<?= e(log_page_url($totalPages, $search, $limit)) ?>">&raquo;</a>
+                  </div>
+
+                  <div class="rows-box">
+                    <label for="rowsPerPageSelect">Baris</label>
+                    <select class="rows-select" id="rowsPerPageSelect" aria-label="Jumlah baris per halaman">
+                      <?php foreach ($allowedRowsPerPage as $rowOption): ?>
+                        <option value="<?= e($rowOption) ?>" <?= $limit === $rowOption ? 'selected' : '' ?>><?= e($rowOption) ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
                 </div>
               </div>
             </form>
@@ -249,6 +268,7 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
     const logRowCheckboxes = document.querySelectorAll(".log-row-checkbox");
     const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
     const bulkDeleteForm = document.getElementById("bulkDeleteForm");
+    const rowsPerPageSelect = document.getElementById("rowsPerPageSelect");
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
@@ -353,6 +373,18 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
           }, 180);
         }
       }, 4200);
+    }
+
+    if (rowsPerPageSelect) {
+      rowsPerPageSelect.addEventListener("change", () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("rows", rowsPerPageSelect.value);
+        url.searchParams.set("page", "1");
+        if (!url.searchParams.get("search")) {
+          url.searchParams.delete("search");
+        }
+        window.location.href = url.toString();
+      });
     }
 
     syncBulkDeleteState();

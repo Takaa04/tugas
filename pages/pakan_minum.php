@@ -46,10 +46,30 @@ function selected_days(string $hari): array
 }
 
 $statusMessages = [
-    'created' => 'Jadwal berhasil ditambahkan.',
-    'updated' => 'Jadwal berhasil diperbarui.',
-    'deleted' => 'Jadwal berhasil dihapus.',
-    'invalid' => 'Data belum lengkap. Periksa kembali form jadwal.',
+    'created' => [
+        'title' => 'Jadwal Ditambahkan',
+        'message' => 'Jadwal pakan atau minum baru berhasil disimpan.',
+        'tone' => 'success',
+        'icon' => 'bi-check2-circle',
+    ],
+    'updated' => [
+        'title' => 'Jadwal Diperbarui',
+        'message' => 'Perubahan jadwal berhasil diterapkan.',
+        'tone' => 'success',
+        'icon' => 'bi-pencil-square',
+    ],
+    'deleted' => [
+        'title' => 'Jadwal Dihapus',
+        'message' => 'Jadwal yang dipilih sudah dihapus dari daftar.',
+        'tone' => 'success',
+        'icon' => 'bi-trash3',
+    ],
+    'invalid' => [
+        'title' => 'Form Belum Lengkap',
+        'message' => 'Periksa kembali isian jadwal sebelum disimpan.',
+        'tone' => 'warning',
+        'icon' => 'bi-exclamation-circle',
+    ],
 ];
 
 $activePage = 'pakan_minum';
@@ -79,12 +99,6 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
 
       <section class="content-section">
         <div class="container-fluid px-0">
-          <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
-            <div class="alert alert-<?= $_GET['status'] === 'invalid' ? 'warning' : 'success' ?> mb-3">
-              <?= e($statusMessages[$_GET['status']]) ?>
-            </div>
-          <?php endif; ?>
-
           <div class="card-soft status-overview mb-4">
             <div class="row align-items-center g-4 status-overview-grid">
               <div class="col-12 col-lg-3 status-grid-item supply-panel-item">
@@ -199,6 +213,22 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     </main>
   </div>
 
+  <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
+    <?php $statusConfig = $statusMessages[$_GET['status']]; ?>
+    <div class="log-status-toast <?= e($statusConfig['tone']) ?>" id="logStatusAlert" role="alert">
+      <div class="log-status-icon">
+        <i class="bi <?= e($statusConfig['icon']) ?>"></i>
+      </div>
+      <div class="log-status-body">
+        <strong><?= e($statusConfig['title']) ?></strong>
+        <p><?= e($statusConfig['message']) ?></p>
+      </div>
+      <button type="button" class="log-status-close" id="closeStatusAlert" aria-label="Tutup notifikasi">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  <?php endif; ?>
+
   <div class="schedule-modal-backdrop hidden" id="scheduleModal" aria-hidden="true">
     <div class="schedule-modal-card" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
       <form class="schedule-form" method="post" action="../proses/proses_pakan_minum.php">
@@ -303,6 +333,8 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const logStatusAlert = document.getElementById("logStatusAlert");
+    const closeStatusAlert = document.getElementById("closeStatusAlert");
     const feedPercent = document.getElementById("feedPercent");
     const waterPercent = document.getElementById("waterPercent");
     const feedStockText = document.getElementById("feedStockText");
@@ -412,6 +444,26 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) closeDeleteModal();
     });
+
+    if (closeStatusAlert && logStatusAlert) {
+      closeStatusAlert.addEventListener("click", () => {
+        logStatusAlert.classList.add("is-closing");
+        window.setTimeout(() => {
+          logStatusAlert.remove();
+        }, 180);
+      });
+
+      window.setTimeout(() => {
+        if (document.body.contains(logStatusAlert)) {
+          logStatusAlert.classList.add("is-closing");
+          window.setTimeout(() => {
+            if (document.body.contains(logStatusAlert)) {
+              logStatusAlert.remove();
+            }
+          }, 180);
+        }
+      }, 4200);
+    }
 
     renderStock("feed");
     renderStock("water");

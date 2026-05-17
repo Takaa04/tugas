@@ -10,9 +10,13 @@ function bind_params(mysqli_stmt $stmt, string $types, array &$params): void
     call_user_func_array([$stmt, 'bind_param'], $refs);
 }
 
-function ambil_log_harian(mysqli $koneksi, string $search = '', int $page = 1): array
+function ambil_log_harian(mysqli $koneksi, string $search = '', int $page = 1, int $limit = 5): array
 {
-    $limit = 5;
+    $allowedLimits = [5, 10, 20, 50];
+    if (!in_array($limit, $allowedLimits, true)) {
+        $limit = 5;
+    }
+
     $page = max(1, $page);
     $offset = ($page - 1) * $limit;
     $search = trim($search);

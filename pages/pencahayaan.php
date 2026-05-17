@@ -37,10 +37,30 @@ function e($value): string
 }
 
 $statusMessages = [
-    'created' => 'Jadwal lampu berhasil ditambahkan.',
-    'updated' => 'Jadwal lampu berhasil diperbarui.',
-    'deleted' => 'Jadwal lampu berhasil dihapus.',
-    'invalid' => 'Data belum lengkap. Periksa kembali form jadwal.',
+    'created' => [
+        'title' => 'Jadwal Ditambahkan',
+        'message' => 'Jadwal lampu baru berhasil disimpan.',
+        'tone' => 'success',
+        'icon' => 'bi-check2-circle',
+    ],
+    'updated' => [
+        'title' => 'Jadwal Diperbarui',
+        'message' => 'Perubahan jadwal lampu berhasil diterapkan.',
+        'tone' => 'success',
+        'icon' => 'bi-pencil-square',
+    ],
+    'deleted' => [
+        'title' => 'Jadwal Dihapus',
+        'message' => 'Jadwal lampu yang dipilih sudah dihapus.',
+        'tone' => 'success',
+        'icon' => 'bi-trash3',
+    ],
+    'invalid' => [
+        'title' => 'Form Belum Lengkap',
+        'message' => 'Lengkapi data jadwal lampu terlebih dahulu.',
+        'tone' => 'warning',
+        'icon' => 'bi-exclamation-circle',
+    ],
 ];
 
 $activePage = 'pencahayaan';
@@ -71,12 +91,6 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
 
       <section class="content-section">
         <div class="container-fluid px-0">
-          <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
-            <div class="alert alert-<?= $_GET['status'] === 'invalid' ? 'warning' : 'success' ?> mb-3">
-              <?= e($statusMessages[$_GET['status']]) ?>
-            </div>
-          <?php endif; ?>
-
           <div class="card-soft hero-card">
             <div class="hero-grid">
               <div class="hero-block centered">
@@ -176,6 +190,22 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
       </section>
     </main>
   </div>
+
+  <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
+    <?php $statusConfig = $statusMessages[$_GET['status']]; ?>
+    <div class="log-status-toast <?= e($statusConfig['tone']) ?>" id="logStatusAlert" role="alert">
+      <div class="log-status-icon">
+        <i class="bi <?= e($statusConfig['icon']) ?>"></i>
+      </div>
+      <div class="log-status-body">
+        <strong><?= e($statusConfig['title']) ?></strong>
+        <p><?= e($statusConfig['message']) ?></p>
+      </div>
+      <button type="button" class="log-status-close" id="closeStatusAlert" aria-label="Tutup notifikasi">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  <?php endif; ?>
 
   <div class="schedule-modal-backdrop hidden is-minum" id="lightModal" aria-hidden="true">
     <div class="schedule-modal-card" role="dialog" aria-modal="true" aria-labelledby="lightModalTitle">
@@ -321,6 +351,8 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const logStatusAlert = document.getElementById("logStatusAlert");
+    const closeStatusAlert = document.getElementById("closeStatusAlert");
 
     function clearLightForm() {
       lightFormAction.value = "create";
@@ -394,6 +426,26 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !deleteConfirmModal.classList.contains("hidden")) closeDeleteModal();
     });
+
+    if (closeStatusAlert && logStatusAlert) {
+      closeStatusAlert.addEventListener("click", () => {
+        logStatusAlert.classList.add("is-closing");
+        window.setTimeout(() => {
+          logStatusAlert.remove();
+        }, 180);
+      });
+
+      window.setTimeout(() => {
+        if (document.body.contains(logStatusAlert)) {
+          logStatusAlert.classList.add("is-closing");
+          window.setTimeout(() => {
+            if (document.body.contains(logStatusAlert)) {
+              logStatusAlert.remove();
+            }
+          }, 180);
+        }
+      }, 4200);
+    }
   </script>
 </body>
 </html>

@@ -24,8 +24,18 @@ $shown = count($rows);
 $startData = $total > 0 ? (($page - 1) * $limit) + 1 : 0;
 $endData = $total > 0 ? $startData + $shown - 1 : 0;
 $statusMessages = [
-    'deleted' => 'Log harian yang dipilih berhasil dihapus.',
-    'invalid' => 'Pilih minimal satu log harian untuk dihapus.',
+    'deleted' => [
+        'title' => 'Berhasil Dihapus',
+        'message' => 'Log harian yang dipilih berhasil dihapus dari daftar.',
+        'tone' => 'success',
+        'icon' => 'bi-check2-circle',
+    ],
+    'invalid' => [
+        'title' => 'Belum Ada yang Dipilih',
+        'message' => 'Pilih minimal satu log harian terlebih dahulu sebelum menjalankan hapus massal.',
+        'tone' => 'warning',
+        'icon' => 'bi-exclamation-circle',
+    ],
 ];
 
 function e($value): string
@@ -92,12 +102,6 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
       <section class="content-section">
         <div class="container-fluid px-0">
           <div class="card-soft log-card">
-            <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
-              <div class="alert alert-<?= $_GET['status'] === 'invalid' ? 'warning' : 'success' ?> mb-3">
-                <?= e($statusMessages[$_GET['status']]) ?>
-              </div>
-            <?php endif; ?>
-
             <div class="log-toolbar">
               <div>
                 <h2 class="log-title">Log Harian Kandang</h2>
@@ -200,6 +204,22 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
     </main>
   </div>
 
+  <?php if (isset($_GET['status'], $statusMessages[$_GET['status']])): ?>
+    <?php $statusConfig = $statusMessages[$_GET['status']]; ?>
+    <div class="log-status-toast <?= e($statusConfig['tone']) ?>" id="logStatusAlert" role="alert">
+      <div class="log-status-icon">
+        <i class="bi <?= e($statusConfig['icon']) ?>"></i>
+      </div>
+      <div class="log-status-body">
+        <strong><?= e($statusConfig['title']) ?></strong>
+        <p><?= e($statusConfig['message']) ?></p>
+      </div>
+      <button type="button" class="log-status-close" id="closeStatusAlert" aria-label="Tutup notifikasi">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  <?php endif; ?>
+
   <div class="delete-modal-backdrop hidden" id="deleteConfirmModal" aria-hidden="true">
     <div class="delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
       <div class="delete-modal-icon">
@@ -232,6 +252,8 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const logStatusAlert = document.getElementById("logStatusAlert");
+    const closeStatusAlert = document.getElementById("closeStatusAlert");
 
     function syncBulkDeleteState() {
       const checkedCount = Array.from(logRowCheckboxes).filter((item) => item.checked).length;
@@ -312,6 +334,26 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
         closeDeleteModal();
       }
     });
+
+    if (closeStatusAlert && logStatusAlert) {
+      closeStatusAlert.addEventListener("click", () => {
+        logStatusAlert.classList.add("is-closing");
+        window.setTimeout(() => {
+          logStatusAlert.remove();
+        }, 180);
+      });
+
+      window.setTimeout(() => {
+        if (document.body.contains(logStatusAlert)) {
+          logStatusAlert.classList.add("is-closing");
+          window.setTimeout(() => {
+            if (document.body.contains(logStatusAlert)) {
+              logStatusAlert.remove();
+            }
+          }, 180);
+        }
+      }, 4200);
+    }
 
     syncBulkDeleteState();
   </script>

@@ -1,4 +1,46 @@
-/* Login page styles */
+o/* Login page styles */
+
+:root {
+  --cg-bg: #d9f3f6;
+  --cg-panel: #ffffff;
+  --cg-text: #121212;
+  --cg-muted: #6b7280;
+  --cg-accent: #5cb6df;
+  --cg-accent-dark: #496d74;
+  --cg-shadow: 0 10px 24px rgba(46, 85, 98, 0.18);
+  --cg-radius-xl: 28px;
+  --cg-radius-lg: 24px;
+  --cg-font-xs: 0.82rem;
+  --cg-font-sm: 0.9rem;
+  --cg-font-base: 0.95rem;
+  --cg-font-md: 1rem;
+  --cg-font-lg: 1.2rem;
+  --cg-font-xl: 1.5rem;
+  --cg-font-xxl: 1.85rem;
+  --cg-btn-height: 52px;
+  --cg-btn-radius: 14px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--cg-bg);
+  color: #1e293b;
+}
 
 .container {
   position: relative;
@@ -209,12 +251,12 @@
 .card {
   position: relative;
   z-index: 2;
-  width: min(100%, 410px);
+  width: min(100%, 424px);
   background: rgba(255, 255, 255, 0.95);
   border: 2px solid rgba(124, 157, 160, 0.26);
-  border-radius: 24px;
-  padding: 34px 38px 22px;
-  box-shadow: 0 10px 28px rgba(82, 112, 119, 0.32);
+  border-radius: 28px;
+  padding: 36px 40px 26px;
+  box-shadow: 0 16px 34px rgba(82, 112, 119, 0.26);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -222,19 +264,21 @@
 
 .logo {
   width: 172px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .title {
   font-size: 21px;
+  line-height: 1.25;
   font-weight: 700;
   color: #111827;
+  text-align: center;
 }
 
 .subtitle {
   font-size: 14px;
   color: #667085;
-  margin: 6px 0 24px;
+  margin: 8px 0 26px;
   text-align: center;
 }
 
@@ -252,13 +296,13 @@
 
 .input-box {
   width: 100%;
-  height: 44px;
-  border-radius: 9px;
-  border: 1.8px solid #7ba0a7;
+  height: 46px;
+  border-radius: 10px;
+  border: 1.5px solid #7ba0a7;
   padding: 0 14px;
-  font-size: 13px;
+  font-size: 14px;
   color: #1f2937;
-  background: rgba(255, 255, 255, 0.9);
+  background: #edf4ff;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -274,7 +318,7 @@
 
 .password-wrap {
   position: relative;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .input-password {
@@ -307,13 +351,13 @@
   width: 100%;
   height: 46px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 12px;
   background: linear-gradient(180deg, #88aeb3 0%, #789ca2 100%);
   color: #fff;
   font-weight: 700;
   font-size: 15px;
   cursor: pointer;
-  box-shadow: 0 8px 16px rgba(120, 156, 162, 0.28);
+  box-shadow: 0 10px 20px rgba(120, 156, 162, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -325,11 +369,11 @@
 .forgot-link {
   border: 0;
   background: transparent;
-  color: #6b8b91;
-  font-size: 12px;
+  color: #6f88a8;
+  font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
-  margin: 10px 0 12px;
+  margin: 10px 0 14px;
 }
 
 .forgot-link:hover {
@@ -345,13 +389,13 @@
 }
 
 .footer-label {
-  font-size: 11px;
+  font-size: 11.5px;
   color: #7a7a7a;
   margin-bottom: 8px;
 }
 
 .footer-logo {
-  width: 134px;
+  width: 124px;
   max-width: 100%;
   display: block;
   margin: 0 auto;
@@ -580,7 +624,8 @@
   }
 
   .card {
-    padding: 28px 22px 20px;
+    width: min(100%, 424px);
+    padding: 32px 26px 24px;
   }
 
   .scene-pillars-top,
@@ -761,7 +806,7 @@
 
 @media (max-width: 480px) {
   .logo {
-    width: 156px;
+    width: 162px;
   }
 
   .title {

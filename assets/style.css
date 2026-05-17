@@ -371,38 +371,15 @@ body.page-log-harian {
   background: transparent;
   cursor: pointer;
   padding: 0;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .eye-icon {
-  position: relative;
-  display: block;
-  width: 18px;
-  height: 10px;
-  margin: 0 auto;
-  border: 2px solid #111827;
-  border-radius: 999px / 70%;
-}
-
-.eye-icon::before {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 1px;
-  width: 4px;
-  height: 4px;
-  background: #111827;
-  border-radius: 50%;
-}
-
-.toggle-password.active .eye-icon::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: -4px;
-  width: 2px;
-  height: 16px;
-  background: #111827;
-  transform: rotate(45deg);
+  font-size: 1.05rem;
+  line-height: 1;
 }
 
 .btn {

@@ -16,6 +16,7 @@ function e($value): string
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="login-page">
@@ -51,8 +52,8 @@ function e($value): string
         <label class="label" for="password">Password</label>
         <div class="password-wrap">
           <input id="password" type="password" name="password" class="input-box input-password" placeholder="Masukkan password" required>
-          <button type="button" class="toggle-password" id="togglePassword" aria-label="Tampilkan password">
-            <span class="eye-icon"></span>
+          <button type="button" class="toggle-password active" id="togglePassword" aria-label="Tampilkan password" aria-pressed="false" title="Tampilkan password">
+            <i class="bi bi-eye-slash eye-icon" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -108,7 +109,13 @@ function e($value): string
       const isPassword = passwordInput.type === "password";
       passwordInput.type = isPassword ? "text" : "password";
       togglePassword.setAttribute("aria-label", isPassword ? "Sembunyikan password" : "Tampilkan password");
-      togglePassword.classList.toggle("active", isPassword);
+      togglePassword.setAttribute("aria-pressed", isPassword ? "true" : "false");
+      togglePassword.setAttribute("title", isPassword ? "Sembunyikan password" : "Tampilkan password");
+      togglePassword.classList.toggle("active", !isPassword);
+      const icon = togglePassword.querySelector(".eye-icon");
+      if (icon) {
+        icon.className = isPassword ? "bi bi-eye eye-icon" : "bi bi-eye-slash eye-icon";
+      }
     });
 
     function openModal() {

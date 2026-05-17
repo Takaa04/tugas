@@ -249,7 +249,7 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
             <?php foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day): ?>
               <label class="schedule-day"><input type="checkbox" name="hari[]" value="<?= e($day) ?>"><span><?= e($day) ?></span></label>
             <?php endforeach; ?>
-            <label class="schedule-day"><input type="checkbox" name="hari[]" value="Semua Hari"><span>Semua Hari</span></label>
+            <label class="schedule-day"><input type="checkbox" name="hari[]" value="Semua Hari" id="lightAllDays"><span>Semua Hari</span></label>
           </div>
           <button type="button" class="schedule-reset-btn" id="lightResetBtn"><i class="bi bi-arrow-repeat"></i><span>Reset</span></button>
         </div>
@@ -348,6 +348,7 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
     const lightCatatan = document.getElementById("lightCatatan");
     const lightModalTitle = document.getElementById("lightModalTitle");
     const lightCheckboxes = lightModal.querySelectorAll(".schedule-day input");
+    const lightAllDaysCheckbox = document.getElementById("lightAllDays");
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
@@ -363,6 +364,29 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
       lightCatatan.value = "";
       lightModalTitle.textContent = "Tambah Jadwal Lampu";
       lightCheckboxes.forEach((checkbox) => checkbox.checked = false);
+    }
+
+    function syncLightDayState(changedCheckbox = null) {
+      const dayCheckboxes = Array.from(lightCheckboxes).filter((checkbox) => checkbox.value !== "Semua Hari");
+      if (!lightAllDaysCheckbox) {
+        return;
+      }
+
+      if (changedCheckbox === lightAllDaysCheckbox) {
+        dayCheckboxes.forEach((checkbox) => {
+          checkbox.checked = lightAllDaysCheckbox.checked;
+        });
+        return;
+      }
+
+      const allChecked = dayCheckboxes.every((checkbox) => checkbox.checked);
+      const anyUnchecked = dayCheckboxes.some((checkbox) => !checkbox.checked);
+
+      if (allChecked) {
+        lightAllDaysCheckbox.checked = true;
+      } else if (anyUnchecked) {
+        lightAllDaysCheckbox.checked = false;
+      }
     }
 
     function openLightModal() {
@@ -396,7 +420,13 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
       openLightModal();
     });
     document.getElementById("closeLightModal").addEventListener("click", closeLightModal);
-    document.getElementById("lightResetBtn").addEventListener("click", () => lightCheckboxes.forEach((checkbox) => checkbox.checked = false));
+    document.getElementById("lightResetBtn").addEventListener("click", () => {
+      lightCheckboxes.forEach((checkbox) => checkbox.checked = false);
+      syncLightDayState();
+    });
+    lightCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => syncLightDayState(checkbox));
+    });
     lightModal.addEventListener("click", (event) => { if (event.target === lightModal) closeLightModal(); });
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !lightModal.classList.contains("hidden")) closeLightModal(); });
     document.querySelectorAll(".js-open-delete-modal").forEach((button) => {
@@ -419,6 +449,7 @@ $topbarSubtitle = 'Atur mode lampu, status pencahayaan, dan jadwal nyala kandang
         lightModalTitle.textContent = "Edit Jadwal Lampu";
         const days = button.dataset.hari.split(",").map((day) => day.trim());
         lightCheckboxes.forEach((checkbox) => checkbox.checked = days.includes(checkbox.value));
+        syncLightDayState();
         openLightModal();
       });
     });

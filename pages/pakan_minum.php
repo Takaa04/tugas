@@ -323,6 +323,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     const scheduleTypeIcon = document.getElementById("scheduleTypeIcon");
     const scheduleUnit = document.getElementById("scheduleUnit");
     const scheduleCheckboxes = document.querySelectorAll(".schedule-day input");
+    const allDaysCheckbox = document.getElementById("allDays");
     const scheduleJenis = document.getElementById("scheduleJenis");
     const formAction = document.getElementById("formAction");
     const scheduleId = document.getElementById("scheduleId");
@@ -380,6 +381,29 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       setScheduleType("Pakan");
     }
 
+    function syncScheduleDayState(changedCheckbox = null) {
+      const dayCheckboxes = Array.from(scheduleCheckboxes).filter((checkbox) => checkbox.value !== "Semua Hari");
+      if (!allDaysCheckbox) {
+        return;
+      }
+
+      if (changedCheckbox === allDaysCheckbox) {
+        dayCheckboxes.forEach((checkbox) => {
+          checkbox.checked = allDaysCheckbox.checked;
+        });
+        return;
+      }
+
+      const allChecked = dayCheckboxes.every((checkbox) => checkbox.checked);
+      const anyUnchecked = dayCheckboxes.some((checkbox) => !checkbox.checked);
+
+      if (allChecked) {
+        allDaysCheckbox.checked = true;
+      } else if (anyUnchecked) {
+        allDaysCheckbox.checked = false;
+      }
+    }
+
     function openScheduleModal() {
       scheduleModal.classList.remove("hidden");
       document.body.classList.add("modal-open");
@@ -414,7 +438,13 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     scheduleModal.addEventListener("click", (event) => { if (event.target === scheduleModal) closeScheduleModal(); });
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !scheduleModal.classList.contains("hidden")) closeScheduleModal(); });
     scheduleTypeButtons.forEach((button) => button.addEventListener("click", () => setScheduleType(button.dataset.type)));
-    scheduleResetBtn.addEventListener("click", () => scheduleCheckboxes.forEach((checkbox) => checkbox.checked = false));
+    scheduleResetBtn.addEventListener("click", () => {
+      scheduleCheckboxes.forEach((checkbox) => checkbox.checked = false);
+      syncScheduleDayState();
+    });
+    scheduleCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => syncScheduleDayState(checkbox));
+    });
     document.getElementById("feedActionBtn").addEventListener("click", () => useStock("feed"));
     document.getElementById("waterActionBtn").addEventListener("click", () => useStock("water"));
     document.querySelectorAll(".js-open-delete-modal").forEach((button) => {
@@ -437,6 +467,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
         setScheduleType(button.dataset.jenis);
         const days = button.dataset.hari.split(",").map((day) => day.trim());
         scheduleCheckboxes.forEach((checkbox) => checkbox.checked = days.includes(checkbox.value));
+        syncScheduleDayState();
         openScheduleModal();
       });
     });

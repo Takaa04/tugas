@@ -1,108 +1,96 @@
-# ?? ChickGuard - Sistem Monitoring Kandang Ayam Otomatis
+# ChickGuard
 
-[![PHP](https://img.shields.io/badge/PHP-7%2B-777DD6?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+ChickGuard adalah aplikasi web berbasis PHP untuk monitoring kandang ayam. Proyek ini menyediakan dashboard ringkas, pengelolaan jadwal pencahayaan, jadwal pakan dan minum, serta log harian dalam satu antarmuka admin.
 
-## ? Demo Dashboard
 ![ChickGuard Dashboard](assets/images/docs/dashboard-screenshot.png)
-*(Screenshot placeholder - ambil screenshot dashboard Anda dan ganti link ini)*
 
-**ChickGuard** adalah aplikasi web modern untuk **monitoring dan kontrol otomatis kandang ayam** secara real-time. Pantau suhu, kelembaban, kontrol pencahayaan, pakan & minum, serta log harian – semua dalam satu dashboard responsive yang keren!
+## Fitur
+- Login admin berbasis session.
+- Lupa password dan reset password menggunakan token.
+- Dashboard monitoring dengan ringkasan suhu, kelembapan, status kandang, dan grafik mingguan.
+- Manajemen jadwal pencahayaan: tambah, ubah, hapus, dan pagination.
+- Manajemen jadwal pakan dan minum: tambah, ubah, hapus, dan pagination.
+- Log harian dengan pencarian, pagination, pilihan jumlah baris, dan hapus massal.
+- Seed data otomatis untuk tabel utama saat halaman fitur diakses.
 
-### ?? Fitur Utama
-- ?? **Dashboard Real-time**: Metrics suhu, kelembaban, status kandang
-- ?? **Grafik Interaktif**: Chart.js untuk trend suhu & lembab (mingguan)
-- ?? **Kontrol Pencahayaan**: Atur jadwal lampu kandang otomatis
-- ?? **Manajemen Pakan & Minum**: Monitor stok dan jadwal pemberian
-- ?? **Log Harian**: Riwayat aktivitas lengkap
-- ?? **Login Aman**: Auth session-based dengan role admin
-- ?? **Responsive Design**: Mobile-friendly dengan Bootstrap 5
-- ? **Siap Produksi**: XAMPP local atau hosting PHP/MySQL
+## Teknologi
+- PHP native
+- MySQL / MariaDB
+- Bootstrap 5
+- Chart.js
+- Bootstrap Icons dan Font Awesome
 
-### ??? Tech Stack
-| Frontend | Backend | Database | Charts | Others |
-|----------|---------|----------|--------|--------|
-| Bootstrap 5 | PHP 7+ | MySQL 8+ (MySQLi) | Chart.js 4 | Font Awesome, Google Fonts (Poppins) |
-
-### ?? Instalasi Cepat (XAMPP)
-1. **Setup XAMPP**:
-   ```
-   Download & install XAMPP (Apache + MySQL)
-   Start Apache & MySQL di XAMPP Control Panel
-   ```
-
-2. **Deploy Project**:
-   ```
-   Copy folder 'tugas' ke C:\xampp\htdocs\
-   ```
-
-3. **Setup Database**:
-   ```
-   Buka http://localhost/phpmyadmin
-   Import file database/chickguard.sql
-   ```
-
-4. **Akses App**:
-   ```
-   Buka http://localhost/tugas/
-   Login: username **admin**, password **admin123** (atau cek hash di SQL)
-   ```
-
-5. **Demo Dashboard**: http://localhost/tugas/pages/dashboard.php
-
-### ?? Struktur Project
-```
-tugas/
-+-- index.php          (Auth redirect)
-+-- login.php          (Halaman login)
-+-- README.md          (Anda sedang baca ini!)
-+-- config/
-¦   +-- koneksi.php    (DB connection)
-+-- database/
-¦   +-- chickguard.sql (DB schema)
-+-- pages/
-¦   +-- dashboard.php  (Main dashboard)
-¦   +-- pencahayaan.php
-¦   +-- pakan_minum.php
-¦   +-- log_harian.php
-+-- components/
-¦   +-- sidebar.php
-¦   +-- topbar.php
-+-- proses/
-¦   +-- proses_login.php
-¦   +-- logout.php
-+-- assets/
-    +-- style.css
-    +-- dashboard.css
-    +-- logo.png
-    +-- ...
+## Struktur Proyek
+```text
+chick/
+|-- index.php
+|-- login.php
+|-- reset_password.php
+|-- tambah_admin.php
+|-- config/
+|   `-- koneksi.php
+|-- database/
+|   `-- chickguard.sql
+|-- pages/
+|   |-- dashboard.php
+|   |-- pencahayaan.php
+|   |-- pakan_minum.php
+|   `-- log_harian.php
+|-- proses/
+|   |-- init_tables.php
+|   |-- proses_login.php
+|   |-- proses_lupa_password.php
+|   |-- proses_reset_password.php
+|   |-- proses_pencahayaan.php
+|   |-- proses_pakan_minum.php
+|   |-- proses_log_harian.php
+|   |-- filter_log_harian.php
+|   `-- logout.php
+|-- componets/
+|   |-- sidebar.php
+|   `-- topbar.php
+`-- assets/
+    |-- css/
+    |-- images/
+    `-- vendor/
 ```
 
-### ?? Demo Credentials
-```
-Username: admin
-Password: admin123
-```
+Catatan: folder shared layout pada repo saat ini bernama `componets`, bukan `components`.
 
-### ?? Roadmap
-- [x] Dashboard monitoring dummy data
-- [ ] Integrasi sensor real (IoT: DHT22 suhu/lembab, relay lampu/pakan)
-- [ ] Notifikasi WhatsApp/Email alert
-- [ ] Mobile PWA
-- [ ] Multi-user roles (admin/peternak)
-- [ ] API REST untuk mobile app
+## Persiapan Lokal
+1. Letakkan folder proyek di `C:\xampp\htdocs\chick`.
+2. Jalankan Apache dan MySQL dari XAMPP.
+3. Buat database `chickguard` di phpMyAdmin.
+4. Import file `database/chickguard.sql`.
+5. Sesuaikan koneksi database di `config/koneksi.php` bila username, password, atau host MySQL Anda berbeda.
+6. Buka `http://localhost/chick/`.
 
-### ?? Kontribusi
-1. Fork repo ini
-2. Buat branch `feature/xxx`
-3. Commit changes & PR
+## Akun Demo
+- Username: `admin`
+- Email: `admin@chickguard.local`
+- Password default: gunakan akun admin dari data SQL yang diimpor.
 
-**Issues?** Buka [Issues](https://github.com/username/tugas/issues/new)
+Jika perlu membuat admin baru secara manual, gunakan `tambah_admin.php`.
 
----
+## Alur Halaman
+- `index.php`: pengarah awal aplikasi.
+- `login.php`: login admin dan form lupa password.
+- `reset_password.php`: set password baru dari token reset.
+- `pages/dashboard.php`: tampilan ringkas monitoring.
+- `pages/pencahayaan.php`: pengelolaan jadwal lampu.
+- `pages/pakan_minum.php`: pengelolaan jadwal pakan dan minum.
+- `pages/log_harian.php`: pencarian dan pengelolaan log harian.
 
-? **Star repo jika bermanfaat!** Made with ?? untuk peternak ayam Indonesia ????
+## Catatan Implementasi
+- Dashboard saat ini masih memakai data simulasi pada sisi frontend untuk suhu dan kelembapan.
+- Tabel `jadwal_pencahayaan`, `jadwal_pakan_minum`, `log_harian`, dan `password_resets` akan dibuat atau dilengkapi melalui `proses/init_tables.php` saat halaman terkait dibuka.
+- Beberapa library frontend tersedia di `assets/vendor`, tetapi halaman utama saat ini masih memuat Bootstrap, Chart.js, dan ikon dari CDN.
 
+## Pengembangan Lanjutan
+- Integrasi sensor IoT untuk data real-time.
+- Sinkronisasi kontrol lampu, pakan, dan minum ke perangkat fisik.
+- Notifikasi otomatis saat kondisi kandang di luar batas aman.
+- Pemisahan role pengguna selain admin.
 
+## Lisensi
+Belum ada file lisensi terpisah di repo ini. Jika proyek akan dipublikasikan, tambahkan lisensi yang sesuai.

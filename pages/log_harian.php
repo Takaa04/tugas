@@ -64,6 +64,22 @@ function dash_if_empty($value): string
     return $value === '' ? '-' : $value;
 }
 
+function hari_log($createdAt): string
+{
+    $timestamp = strtotime((string) $createdAt);
+    $hari = [
+        'Sunday' => 'Minggu',
+        'Monday' => 'Senin',
+        'Tuesday' => 'Selasa',
+        'Wednesday' => 'Rabu',
+        'Thursday' => 'Kamis',
+        'Friday' => 'Jumat',
+        'Saturday' => 'Sabtu',
+    ];
+
+    return $hari[date('l', $timestamp)] ?? '-';
+}
+
 function checkbox_id($prefix, $value): string
 {
     return preg_replace('/[^a-zA-Z0-9_-]/', '-', $prefix . '-' . $value);
@@ -169,15 +185,15 @@ $topbarSubtitle = 'Tinjau riwayat suhu, kelembaban, pakan, minum, dan status lam
                               <span><span class="visually-hidden">Pilih log pada <?= e(date('H:i', strtotime($item['waktu']))) ?></span></span>
                             </label>
                           </td>
-                          <td><?= e(dash_if_empty($item['jadwal_hari'] ?? '')) ?></td>
+                          <td><?= e(hari_log($item['created_at'] ?? '')) ?></td>
                           <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
                           <td class="cell-strong">
                             <?= e(number_format((float) $item['suhu'], 0)) ?>&deg;C /
                             <?= e(number_format((float) $item['kelembaban'], 0)) ?>%
                           </td>
                           <td>
-                            Pakan: <?= e(dash_if_empty($item['jadwal_pakan'] ?? '')) ?><br>
-                            Minum: <?= e(dash_if_empty($item['jadwal_minum'] ?? '')) ?>
+                            Pakan: <?= e(format_number_or_dash($item['pakan'] ?? null, 'kg')) ?><br>
+                            Minum: <?= e(format_number_or_dash($item['minum'] ?? null, 'L')) ?>
                           </td>
                           <td class="text-center"><span class="lamp-badge <?= e($lampuClass) ?>"><?= e($item['lampu']) ?></span></td>
                         </tr>

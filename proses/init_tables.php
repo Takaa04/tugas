@@ -48,6 +48,8 @@ function chickguard_init_tables(mysqli $koneksi): void
     seed_jadwal_pakan_minum($koneksi);
     seed_jadwal_pencahayaan($koneksi);
     seed_log_harian($koneksi);
+    sinkronkan_data_log_harian($koneksi);
+    tambah_log_harian_otomatis($koneksi);
 }
 
 function ensure_users_email_column(mysqli $koneksi): void
@@ -149,5 +151,101 @@ function seed_log_harian(mysqli $koneksi): void
         mysqli_stmt_bind_param($stmt, "sdddds", $waktu, $suhu, $kelembaban, $pakan, $minum, $lampu);
         mysqli_stmt_execute($stmt);
     }
+}
+
+function hari_indonesia(?string $tanggal = null): string
+{
+    $timestamp = $tanggal ? strtotime($tanggal) : time();
+    $hari = [
+        'Sunday' => 'Minggu',
+        'Monday' => 'Senin',
+        'Tuesday' => 'Selasa',
+        'Wednesday' => 'Rabu',
+        'Thursday' => 'Kamis',
+        'Friday' => 'Jumat',
+        'Saturday' => 'Sabtu',
+    ];
+
+    return $hari[date('l', $timestamp)] ?? 'Senin';
+}
+
+function jadwal_berlaku_pada_hari(string $jadwalHari, string $hari): bool
+{
+    if ($jadwalHari === 'Semua Hari') {
+        return true;
+    }
+
+    $daftarHari = array_map('trim', explode(',', $jadwalHari));
+    return in_array($hari, $daftarHari, true);
+}
+
+function ringkasan_pakan_minum_harian(mysqli $koneksi, string $hari): array
+{
+    $result = mysqli_query($koneksi, "SELECT jenis, jumlah, hari FROM jadwal_pakan_minum");
+    $ringkasan = ['pakan' => 0.0, 'minum' => 0.0];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        if (!jadwal_berlaku_pada_hari((string) $row['hari'], $hari)) {
+            continue;
+        }
+
+        if ($row['jenis'] === 'Pakan') {
+            $ringkasan['pakan'] += (float) $row['jumlah'];
+        } elseif ($row['jenis'] === 'Minum') {
+            $ringkasan['minum'] += (float) $row['jumlah'];
+        }
+    }
+
+    return $ringkasan;
+}
+
+function status_lampu_harian(mysqli $koneksi, string $hari): string
+{
+    $result = mysqli_query($koneksi, "SELECT hari FROM jadwal_pencahayaan");
+    while ($row = mysqli_fetch_assoc($result)) {
+        if (jadwal_berlaku_pada_hari((string) $row['hari'], $hari)) {
+            return 'Hidup';
+        }
+    }
+
+    return 'Mati';
+}
+
+function sinkronkan_data_log_harian(mysqli $koneksi): void
+{
+    $result = mysqli_query($koneksi, "SELECT id, created_at FROM log_harian");
+    $stmt = mysqli_prepare($koneksi, "UPDATE log_harian SET pakan=?, minum=?, lampu=? WHERE id=?");
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $hari = hari_indonesia($row['created_at'] ?? null);
+        $ringkasan = ringkasan_pakan_minum_harian($koneksi, $hari);
+        $lampu = status_lampu_harian($koneksi, $hari);
+        $id = (int) $row['id'];
+
+        mysqli_stmt_bind_param($stmt, "ddsi", $ringkasan['pakan'], $ringkasan['minum'], $lampu, $id);
+        mysqli_stmt_execute($stmt);
+    }
+}
+
+function tambah_log_harian_otomatis(mysqli $koneksi): void
+{
+    $result = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM log_harian WHERE DATE(created_at) = CURDATE()");
+    $row = mysqli_fetch_assoc($result);
+    if ((int) ($row['total'] ?? 0) > 0) {
+        return;
+    }
+
+    $waktu = date('H:i:s');
+    $suhu = mt_rand(250, 320) / 10;
+    $kelembaban = mt_rand(580, 750) / 10;
+    $hari = hari_indonesia();
+    $ringkasan = ringkasan_pakan_minum_harian($koneksi, $hari);
+    $pakan = $ringkasan['pakan'];
+    $minum = $ringkasan['minum'];
+    $lampu = status_lampu_harian($koneksi, $hari);
+
+    $stmt = mysqli_prepare($koneksi, "INSERT INTO log_harian (waktu, suhu, kelembaban, pakan, minum, lampu) VALUES (?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "sdddds", $waktu, $suhu, $kelembaban, $pakan, $minum, $lampu);
+    mysqli_stmt_execute($stmt);
 }
 ?>

@@ -45,6 +45,11 @@ function selected_days(string $hari): array
     return array_map('trim', explode(',', $hari));
 }
 
+function checkbox_id($prefix, $value): string
+{
+    return preg_replace('/[^a-zA-Z0-9_-]/', '-', $prefix . '-' . $value);
+}
+
 $statusMessages = [
     'created' => [
         'title' => 'Jadwal Ditambahkan',
@@ -67,6 +72,12 @@ $statusMessages = [
     'invalid' => [
         'title' => 'Form Belum Lengkap',
         'message' => 'Periksa kembali isian jadwal sebelum disimpan.',
+        'tone' => 'warning',
+        'icon' => 'bi-exclamation-circle',
+    ],
+    'none_selected' => [
+        'title' => 'Belum Ada yang Dipilih',
+        'message' => 'Pilih minimal satu jadwal pakan atau minum terlebih dahulu sebelum menjalankan hapus massal.',
         'tone' => 'warning',
         'icon' => 'bi-exclamation-circle',
     ],
@@ -152,68 +163,90 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
               <button type="button" class="pill-button add-btn js-open-schedule-modal">+ Tambah Jadwal</button>
             </div>
 
-            <div class="table-wrap">
-              <div class="table-responsive">
-                <table class="table data-table schedule-table align-middle">
-                <thead>
-                  <tr>
-                    <th>Jenis</th>
-                    <th>Waktu</th>
-                    <th>Jumlah</th>
-                    <th>Hari</th>
-                    <th>Catatan</th>
-                    <th class="text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php if (count($jadwal) === 0): ?>
-                    <tr><td colspan="6" class="text-center text-muted py-4">Belum ada jadwal.</td></tr>
-                  <?php endif; ?>
+            <form method="post" action="../proses/proses_pakan_minum.php" id="bulkDeleteForm">
+              <input type="hidden" name="action" value="delete_selected">
 
-                  <?php foreach ($jadwal as $item): ?>
-                    <?php $unit = $item['jenis'] === 'Pakan' ? 'kg' : 'L'; ?>
+              <div class="table-wrap">
+                <div class="table-responsive">
+                  <table class="table data-table schedule-table align-middle">
+                  <thead>
                     <tr>
-                      <td><?= e($item['jenis']) ?></td>
-                      <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
-                      <td><?= e(number_format((float) $item['jumlah'], 1)) ?> <?= e($unit) ?></td>
-                      <td><?= e($item['hari']) ?></td>
-                      <td><?= e($item['catatan']) ?></td>
-                      <td>
-                        <div class="action-icons justify-content-center">
-                          <i class="bi bi-pencil-square edit js-edit-schedule"
-                             data-id="<?= e($item['id']) ?>"
-                             data-jenis="<?= e($item['jenis']) ?>"
-                             data-waktu="<?= e(date('H:i', strtotime($item['waktu']))) ?>"
-                             data-jumlah="<?= e($item['jumlah']) ?>"
-                             data-hari="<?= e($item['hari']) ?>"
-                             data-catatan="<?= e($item['catatan']) ?>"></i>
-                          <a href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>" class="js-open-delete-modal" data-delete-href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>">
-                            <i class="bi bi-trash3 delete"></i>
-                          </a>
-                        </div>
-                      </td>
+                      <th class="check-col">
+                        <label class="schedule-day log-check">
+                          <input type="checkbox" id="selectAllSchedules">
+                          <span><span class="visually-hidden">Pilih semua jadwal pakan minum</span></span>
+                        </label>
+                      </th>
+                      <th>Jenis</th>
+                      <th>Waktu</th>
+                      <th>Jumlah</th>
+                      <th>Hari</th>
+                      <th>Catatan</th>
+                      <th class="text-center">Aksi</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-                </table>
-              </div>
-            </div>
+                  </thead>
+                  <tbody>
+                    <?php if (count($jadwal) === 0): ?>
+                      <tr><td colspan="7" class="text-center text-muted py-4">Belum ada jadwal.</td></tr>
+                    <?php endif; ?>
 
-            <div class="table-footer">
-              <div class="footer-left">
-                <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($totalData) ?></strong> entri</span>
+                    <?php foreach ($jadwal as $item): ?>
+                      <?php $unit = $item['jenis'] === 'Pakan' ? 'kg' : 'L'; ?>
+                      <?php $rowCheckboxId = checkbox_id('schedule-row', $item['id'] ?? ''); ?>
+                      <tr>
+                        <td class="check-col">
+                          <label class="schedule-day log-check" for="<?= e($rowCheckboxId) ?>">
+                            <input type="checkbox" id="<?= e($rowCheckboxId) ?>" class="schedule-row-checkbox" name="selected_schedules[]" value="<?= e($item['id']) ?>">
+                            <span><span class="visually-hidden">Pilih jadwal <?= e($item['jenis']) ?> pukul <?= e(date('H:i', strtotime($item['waktu']))) ?></span></span>
+                          </label>
+                        </td>
+                        <td><?= e($item['jenis']) ?></td>
+                        <td><?= e(date('H:i', strtotime($item['waktu']))) ?></td>
+                        <td><?= e(number_format((float) $item['jumlah'], 1)) ?> <?= e($unit) ?></td>
+                        <td><?= e($item['hari']) ?></td>
+                        <td><?= e($item['catatan']) ?></td>
+                        <td>
+                          <div class="action-icons justify-content-center">
+                            <i class="bi bi-pencil-square edit js-edit-schedule"
+                               data-id="<?= e($item['id']) ?>"
+                               data-jenis="<?= e($item['jenis']) ?>"
+                               data-waktu="<?= e(date('H:i', strtotime($item['waktu']))) ?>"
+                               data-jumlah="<?= e($item['jumlah']) ?>"
+                               data-hari="<?= e($item['hari']) ?>"
+                               data-catatan="<?= e($item['catatan']) ?>"></i>
+                            <a href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>" class="js-open-delete-modal" data-delete-href="../proses/proses_pakan_minum.php?action=delete&id=<?= e($item['id']) ?>">
+                              <i class="bi bi-trash3 delete"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                  </table>
+                </div>
               </div>
 
-              <div class="pagination-wrap">
-                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="?page=1">&laquo;</a>
-                <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="?page=<?= e(max(1, $page - 1)) ?>">&lsaquo;</a>
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                  <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="?page=<?= e($i) ?>"><?= e($i) ?></a>
-                <?php endfor; ?>
-                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="?page=<?= e(min($totalPages, $page + 1)) ?>">&rsaquo;</a>
-                <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="?page=<?= e($totalPages) ?>">&raquo;</a>
+              <div class="table-footer">
+                <button type="submit" class="log-delete-btn" id="deleteSelectedBtn" disabled>
+                  <i class="bi bi-trash3-fill"></i>
+                  <span>Hapus</span>
+                </button>
+
+                <div class="footer-left">
+                  <span>Menampilkan <strong><?= e($startData) ?> - <?= e($endData) ?></strong> dari <strong><?= e($totalData) ?></strong> entri</span>
+                </div>
+
+                <div class="pagination-wrap">
+                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="?page=1">&laquo;</a>
+                  <a class="page-chip <?= $page <= 1 ? 'muted' : '' ?>" href="?page=<?= e(max(1, $page - 1)) ?>">&lsaquo;</a>
+                  <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a class="page-chip <?= $page === $i ? 'active' : '' ?>" href="?page=<?= e($i) ?>"><?= e($i) ?></a>
+                  <?php endfor; ?>
+                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="?page=<?= e(min($totalPages, $page + 1)) ?>">&rsaquo;</a>
+                  <a class="page-chip <?= $page >= $totalPages ? 'muted' : '' ?>" href="?page=<?= e($totalPages) ?>">&raquo;</a>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </section>
@@ -304,7 +337,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
         <i class="bi bi-trash3-fill"></i>
       </div>
       <h2 id="deleteConfirmTitle">Konfirmasi Hapus</h2>
-      <p>Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.</p>
+      <p id="deleteConfirmMessage">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.</p>
       <div class="delete-modal-actions">
         <button type="button" class="delete-modal-btn secondary" id="cancelDeleteBtn">Batal</button>
         <a href="#" class="delete-modal-btn primary" id="confirmDeleteBtn">Ya, Hapus</a>
@@ -341,6 +374,11 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     const deleteConfirmModal = document.getElementById("deleteConfirmModal");
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const deleteConfirmMessage = document.getElementById("deleteConfirmMessage");
+    const selectAllSchedules = document.getElementById("selectAllSchedules");
+    const scheduleRowCheckboxes = document.querySelectorAll(".schedule-row-checkbox");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+    const bulkDeleteForm = document.getElementById("bulkDeleteForm");
     const logStatusAlert = document.getElementById("logStatusAlert");
     const closeStatusAlert = document.getElementById("closeStatusAlert");
     const feedPercent = document.getElementById("feedPercent");
@@ -423,8 +461,21 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       scheduleModal.setAttribute("aria-hidden", "true");
     }
 
-    function openDeleteModal(href) {
+    function syncBulkDeleteState() {
+      const checkedCount = Array.from(scheduleRowCheckboxes).filter((item) => item.checked).length;
+
+      if (deleteSelectedBtn) {
+        deleteSelectedBtn.disabled = checkedCount === 0;
+        deleteSelectedBtn.querySelector("span").textContent = checkedCount > 0 ? `Hapus (${checkedCount})` : "Hapus";
+      }
+    }
+
+    function openDeleteModal(href, isBulkDelete = false) {
       confirmDeleteBtn.setAttribute("href", href);
+      confirmDeleteBtn.dataset.bulkDelete = isBulkDelete ? "true" : "false";
+      deleteConfirmMessage.textContent = isBulkDelete
+        ? "Apakah Anda yakin ingin menghapus semua jadwal yang dipilih? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen."
+        : "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan dan data akan hilang secara permanen.";
       deleteConfirmModal.classList.remove("hidden");
       deleteConfirmModal.setAttribute("aria-hidden", "false");
       document.body.classList.add("modal-open");
@@ -434,6 +485,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       deleteConfirmModal.classList.add("hidden");
       deleteConfirmModal.setAttribute("aria-hidden", "true");
       confirmDeleteBtn.setAttribute("href", "#");
+      confirmDeleteBtn.dataset.bulkDelete = "false";
       document.body.classList.remove("modal-open");
     }
 
@@ -462,6 +514,38 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
     });
     cancelDeleteBtn.addEventListener("click", closeDeleteModal);
     deleteConfirmModal.addEventListener("click", (event) => { if (event.target === deleteConfirmModal) closeDeleteModal(); });
+    if (selectAllSchedules) {
+      selectAllSchedules.addEventListener("change", () => {
+        scheduleRowCheckboxes.forEach((checkbox) => {
+          checkbox.checked = selectAllSchedules.checked;
+        });
+        syncBulkDeleteState();
+      });
+    }
+    scheduleRowCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        if (selectAllSchedules) {
+          selectAllSchedules.checked = Array.from(scheduleRowCheckboxes).every((item) => item.checked);
+        }
+        syncBulkDeleteState();
+      });
+    });
+    if (bulkDeleteForm) {
+      bulkDeleteForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const hasSelected = Array.from(scheduleRowCheckboxes).some((item) => item.checked);
+        if (hasSelected) {
+          openDeleteModal("#", true);
+        }
+      });
+    }
+    confirmDeleteBtn.addEventListener("click", (event) => {
+      if (confirmDeleteBtn.dataset.bulkDelete === "true") {
+        event.preventDefault();
+        closeDeleteModal();
+        bulkDeleteForm.submit();
+      }
+    });
 
     document.querySelectorAll(".js-edit-schedule").forEach((button) => {
       button.addEventListener("click", () => {

@@ -205,6 +205,16 @@ body.page-pencahayaan .schedule-table tbody tr:last-child td {
   border-bottom: 0;
 }
 
+body.page-pencahayaan .check-col {
+  width: 54px;
+  text-align: center;
+}
+
+body.page-pencahayaan .log-check {
+  margin: 0;
+  justify-content: center;
+}
+
 body.page-pencahayaan .table-wrap {
   padding: 0.6rem 0.2rem 0.35rem;
 }
@@ -218,6 +228,33 @@ body.page-pencahayaan .table-footer {
   gap: 14px;
   flex-wrap: nowrap;
   align-items: center;
+}
+
+body.page-pencahayaan .log-delete-btn {
+  border: 0;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.72rem 1.1rem;
+  min-width: 104px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  box-shadow: 0 10px 22px rgba(239, 68, 68, 0.22);
+  transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.page-pencahayaan .log-delete-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(239, 68, 68, 0.28);
+}
+
+body.page-pencahayaan .log-delete-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 body.page-pencahayaan .log-status-toast.success {

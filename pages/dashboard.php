@@ -6,6 +6,10 @@ if (!isset($_SESSION['login'])) {
     exit;
 }
 
+include '../config/koneksi.php';
+include '../proses/init_tables.php';
+chickguard_init_tables($koneksi);
+
 $activePage = 'dashboard';
 $topbarTitle = 'Selamat datang, ' . ($_SESSION['username'] ?? 'Admin');
 $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
@@ -117,32 +121,25 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
       return data;
     }
 
-    function clamp(nilai, min, max) {
-      return Math.min(max, Math.max(min, nilai));
-    }
-
-    function generateNextValue(current, min, max, step) {
-      const delta = (Math.random() - 0.5) * step;
-      return Number(clamp(current + delta, min, max).toFixed(1));
-    }
-
     const labels = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
     const suhuData = generateData(30, 3, 7);
     const lembapData = generateData(68, 10, 7);
     const hitungRataRata = data => data.reduce((total, nilai) => total + Number(nilai), 0) / data.length;
-    const suhuTerakhir = suhuData[suhuData.length - 1];
-    const lembapTerakhir = lembapData[lembapData.length - 1];
-    const suhuStatus = suhuTerakhir >= 24 && suhuTerakhir <= 30 ? "Normal" : "Perlu Dicek";
-    const lembapStatus = lembapTerakhir >= 55 && lembapTerakhir <= 75 ? "Normal" : "Perlu Dicek";
+    const suhuSekarang = suhuData[suhuData.length - 1];
+    const lembapSekarang = lembapData[lembapData.length - 1];
+    const rataRataSuhu = hitungRataRata(suhuData);
+    const rataRataLembap = hitungRataRata(lembapData);
+    const suhuStatus = suhuSekarang >= 24 && suhuSekarang <= 30 ? "Normal" : "Perlu Dicek";
+    const lembapStatus = lembapSekarang >= 55 && lembapSekarang <= 75 ? "Normal" : "Perlu Dicek";
     const statusKandang = suhuStatus === "Normal" && lembapStatus === "Normal" ? "Normal" : "Perlu Dicek";
 
-    document.getElementById("currentSuhu").innerHTML = suhuTerakhir.toFixed(1) + "&deg; C";
-    document.getElementById("currentLembap").textContent = Math.round(lembapTerakhir) + "%";
+    document.getElementById("currentSuhu").innerHTML = suhuSekarang.toFixed(1) + "&deg; C";
+    document.getElementById("currentLembap").textContent = Math.round(lembapSekarang) + "%";
     document.getElementById("suhuStatus").textContent = suhuStatus;
     document.getElementById("lembapStatus").textContent = lembapStatus;
     document.getElementById("statusKandang").textContent = statusKandang;
-    document.getElementById("avgSuhu").innerHTML = hitungRataRata(suhuData).toFixed(1) + "&deg;C";
-    document.getElementById("avgLembap").textContent = Math.round(hitungRataRata(lembapData)) + "%";
+    document.getElementById("avgSuhu").innerHTML = rataRataSuhu.toFixed(1) + "&deg;C";
+    document.getElementById("avgLembap").textContent = Math.round(rataRataLembap) + "%";
 
     const ctx = document.getElementById("farmChart");
 
@@ -199,19 +196,6 @@ $topbarSubtitle = 'Pantau kondisi kandang dan sistem secara real-time';
         }
       }
     });
-
-    let currentSuhuLive = suhuTerakhir;
-    let currentLembapLive = lembapTerakhir;
-
-    function updateSensorDisplayOnly() {
-      currentSuhuLive = generateNextValue(currentSuhuLive, 23, 33, 2.4);
-      currentLembapLive = generateNextValue(currentLembapLive, 52, 80, 8);
-
-      document.getElementById("currentSuhu").innerHTML = currentSuhuLive.toFixed(1) + "&deg; C";
-      document.getElementById("currentLembap").textContent = Math.round(currentLembapLive) + "%";
-    }
-
-    window.setInterval(updateSensorDisplayOnly, 300e0);
 
     function updateWaktu() {
       const now = new Date();

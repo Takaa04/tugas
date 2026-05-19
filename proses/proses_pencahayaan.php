@@ -30,6 +30,28 @@ if ($action === 'delete') {
     redirect_pencahayaan('deleted');
 }
 
+if ($action === 'delete_selected') {
+    $selectedSchedules = $_POST['selected_schedules'] ?? [];
+    if (!is_array($selectedSchedules) || count($selectedSchedules) === 0) {
+        redirect_pencahayaan('none_selected');
+    }
+
+    $ids = array_values(array_unique(array_filter(array_map('intval', $selectedSchedules), static function ($id) {
+        return $id > 0;
+    })));
+
+    if (count($ids) === 0) {
+        redirect_pencahayaan('none_selected');
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $types = str_repeat('i', count($ids));
+    $stmt = mysqli_prepare($koneksi, "DELETE FROM jadwal_pencahayaan WHERE id IN ($placeholders)");
+    mysqli_stmt_bind_param($stmt, $types, ...$ids);
+    mysqli_stmt_execute($stmt);
+    redirect_pencahayaan('deleted');
+}
+
 $id = (int) ($_POST['id'] ?? 0);
 $jenis = trim($_POST['jenis'] ?? '');
 $waktu = $_POST['waktu'] ?? '';

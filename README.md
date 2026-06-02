@@ -37,6 +37,7 @@
 ## 🔑 Akun Demo
 
 - Username: `admin`
+- Password: `admin123`
 - Email: `admin@chickguard.local`
 - Password: gunakan akun admin dari hasil import SQL
 

@@ -268,7 +268,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       </button>
     </div>
   <?php endif; ?>
-
+<!-- Ini modal popup -->
   <div class="schedule-modal-backdrop hidden" id="scheduleModal" aria-hidden="true">
     <div class="schedule-modal-card" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
       <form class="schedule-form" method="post" action="../proses/proses_pakan_minum.php">
@@ -344,7 +344,7 @@ $topbarSubtitle = 'Pantau stok, aksi cepat, dan jadwal pemberian pakan minum';
       </div>
     </div>
   </div>
-
+<!-- JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     function updateWaktu() {
